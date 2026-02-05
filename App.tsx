@@ -12,6 +12,7 @@ import ManageCourses from './pages/ManageCourses';
 import StaffManagement from './pages/StaffManagement';
 import PermissionsManagement from './pages/PermissionsManagement';
 import SuppliersManagement from './pages/SuppliersManagement';
+import ClinicalCenter from './pages/ClinicalCenter';
 import Agenda from './pages/Agenda';
 import TasksKanban from './pages/TasksKanban';
 import MyTraining from './pages/MyTraining';
@@ -128,6 +129,7 @@ const App: React.FC = () => {
     switch (activeTab) {
       case 'dashboard': return <Dashboard />;
       case 'students': return <StudentsManagement />;
+      case 'clinical': return <ClinicalCenter />;
       case 'finance': return <Finance />;
       case 'agenda': return <Agenda />;
       case 'manage-courses': return <ManageCourses />;

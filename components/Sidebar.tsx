@@ -18,7 +18,8 @@ import {
   Target,
   ShieldCheck,
   Settings,
-  Truck
+  Truck,
+  Stethoscope
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -39,6 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'agenda', label: 'Agenda Global', icon: Calendar },
+        { id: 'clinical', label: 'Centro Clínico', icon: Stethoscope },
         { id: 'training-center', label: 'Centro de Treino', icon: Dumbbell },
         { id: 'tasks', label: 'Projetos Kanban', icon: CheckSquare },
       ]
