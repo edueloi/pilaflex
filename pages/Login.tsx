@@ -5,12 +5,7 @@ import {
   Lock, 
   ArrowRight, 
   Leaf, 
-  CheckCircle2,
-  Zap,
-  Star,
-  ShieldCheck,
-  Award,
-  Circle
+  ShieldCheck
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -26,10 +21,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const handleSubmit = (e: React.FormEvent, role: UserRole) => {
     e.preventDefault();
     setIsTransitioning(true);
-    setTimeout(() => onLogin(role), 1500);
+    setTimeout(() => onLogin(role), 1200);
   };
 
-  // Fotos de perfil reais do Unsplash para evitar links quebrados de geradores aleatórios
   const socialProofAvatars = [
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80",
     "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80",
@@ -37,158 +31,150 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white flex flex-col lg:flex-row">
-      {/* Transição Imersiva */}
+    <div className="relative h-screen overflow-hidden bg-white flex flex-col lg:flex-row">
+      {/* Overlay de Transição */}
       {isTransitioning && (
         <div className="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center animate-in fade-in duration-500">
            <div className="flex flex-col items-center gap-6">
               <div className="relative">
-                 <div className="w-20 h-20 border-4 border-emerald-500/20 rounded-full animate-[spin_3s_linear_infinite]" />
+                 <div className="w-12 h-12 border-4 border-emerald-500/20 rounded-full animate-[spin_3s_linear_infinite]" />
                  <div className="absolute inset-0 border-t-4 border-emerald-500 rounded-full animate-spin" />
-                 <Leaf className="absolute inset-0 m-auto text-emerald-500" size={28} />
+                 <Leaf className="absolute inset-0 m-auto text-emerald-500" size={20} />
               </div>
-              <h2 className="text-white font-black text-lg uppercase italic tracking-widest">Acessando seu Studio...</h2>
+              <h2 className="text-white font-black text-[10px] uppercase italic tracking-widest animate-pulse">Sincronizando...</h2>
            </div>
         </div>
       )}
 
-      {/* LADO ESQUERDO: 45% - Clean Login Form */}
-      <div className="w-full lg:w-[45%] flex flex-col justify-center p-8 md:p-16 lg:p-24 relative bg-white shrink-0 z-10 shadow-2xl">
-        <div className="max-w-md mx-auto w-full space-y-12 animate-in slide-in-from-left duration-700">
+      {/* LADO ESQUERDO: Login Form (Compacto) */}
+      <div className="w-full lg:w-[40%] xl:w-[35%] flex flex-col h-full bg-white relative z-10 shadow-2xl overflow-hidden">
+        <div className="flex-1 flex flex-col justify-center px-8 md:px-12 xl:px-16 login-container space-y-6 md:space-y-8">
           
-          {/* Logo e Branding Minimalista */}
-          <div className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="bg-slate-950 p-3 rounded-2xl shadow-2xl">
-                <Leaf size={28} className="text-emerald-500" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-black tracking-tighter uppercase italic text-slate-950 leading-none">PilaFlex</h1>
-                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.4em] mt-1">Management Suite</p>
-              </div>
+          {/* Logo Compacto */}
+          <div className="flex items-center gap-3 logo-box">
+            <div className="bg-slate-950 p-2 rounded-xl shadow-lg">
+              <Leaf size={20} className="text-emerald-500" />
             </div>
-
-            <div className="space-y-4">
-              <h2 className="text-5xl font-black text-slate-950 tracking-tighter uppercase italic leading-[0.9]">O Futuro do seu <span className="text-emerald-500">Studio.</span></h2>
-              <p className="text-slate-400 font-medium text-lg leading-relaxed">
-                A plataforma definitiva para controle de alunos, faturamento e cursos online.
-              </p>
+            <div>
+              <h1 className="text-xl font-black tracking-tighter uppercase italic text-slate-950 leading-none">PilaFlex</h1>
+              <p className="text-[7px] font-black text-emerald-600 uppercase tracking-[0.3em] mt-0.5">Management Suite</p>
             </div>
           </div>
 
-          {/* Formulário Refinado */}
-          <form className="space-y-6">
-            <div className="space-y-4">
-              <div className="group relative">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2 block group-focus-within:text-emerald-500 transition-colors">E-mail de Acesso</label>
+          {/* Headline Reduzido */}
+          <div className="space-y-2">
+            <h2 className="headline-main text-3xl md:text-4xl font-black text-slate-950 tracking-tighter uppercase italic leading-[0.95]">
+              O FUTURO DO SEU <span className="text-emerald-500">STUDIO.</span>
+            </h2>
+            <p className="login-p text-slate-400 font-medium text-sm leading-relaxed max-w-sm">
+              Plataforma para controle de alunos e faturamento.
+            </p>
+          </div>
+
+          {/* Form Compacto */}
+          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <div className="space-y-3">
+              <div className="group relative input-group">
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-1 block group-focus-within:text-emerald-500">E-mail</label>
                 <div className="relative">
-                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500" size={16} />
                   <input 
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="exemplo@pilaflex.com" 
-                    className="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-[24px] outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all font-bold text-slate-900 shadow-inner"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-[16px] outline-none focus:bg-white focus:border-emerald-500 transition-all font-bold text-slate-900 text-xs"
                   />
                 </div>
               </div>
 
-              <div className="group relative">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2 block group-focus-within:text-emerald-500 transition-colors">Senha Secreta</label>
+              <div className="group relative input-group">
+                <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-1 block group-focus-within:text-emerald-500">Senha</label>
                 <div className="relative">
-                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500" size={16} />
                   <input 
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••" 
-                    className="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-[24px] outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all font-bold text-slate-900 shadow-inner"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-[16px] outline-none focus:bg-white focus:border-emerald-500 transition-all font-bold text-slate-900 text-xs"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 px-2">
-              <label className="flex items-center gap-2 cursor-pointer hover:text-emerald-600 transition-colors">
-                <input type="checkbox" className="w-4 h-4 rounded border-slate-200 text-emerald-500 focus:ring-emerald-500" /> Lembrar-me
+            <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-slate-400 px-2">
+              <label className="flex items-center gap-1.5 cursor-pointer hover:text-emerald-600 transition-colors">
+                <input type="checkbox" className="w-3.5 h-3.5 rounded border-slate-200 text-emerald-500" /> Lembrar-me
               </label>
-              <button type="button" className="hover:text-emerald-500 transition-colors">Recuperar Senha</button>
+              <button type="button" className="hover:text-emerald-500">Recuperar Senha</button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button 
                 onClick={(e) => handleSubmit(e, UserRole.PROFESSIONAL)}
-                className="group bg-slate-950 text-white py-6 rounded-[24px] font-black uppercase text-[11px] tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-3 active:scale-95"
+                className="group bg-slate-950 text-white py-4 rounded-[16px] font-black uppercase text-[9px] tracking-[0.2em] shadow-lg hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 active:scale-95"
               >
-                Painel Gestor <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                Painel Gestor <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </button>
               <button 
                 onClick={(e) => handleSubmit(e, UserRole.STUDENT)}
-                className="py-6 bg-white border border-slate-200 text-slate-500 rounded-[24px] font-black uppercase text-[11px] tracking-[0.2em] hover:border-emerald-500 hover:text-emerald-500 transition-all shadow-sm active:scale-95"
+                className="py-4 bg-white border border-slate-200 text-slate-500 rounded-[16px] font-black uppercase text-[9px] tracking-[0.2em] hover:border-emerald-500 hover:text-emerald-500 transition-all active:scale-95"
               >
                 Área do Aluno
               </button>
             </div>
           </form>
 
-          {/* Social Proof Corrigido e Estilizado */}
-          <div className="pt-12 flex items-center justify-between border-t border-slate-50">
-             <div className="flex items-center gap-4">
-                <div className="flex -space-x-4">
+          {/* Social Proof (Ocultável) */}
+          <div className="pt-4 flex items-center justify-between border-t border-slate-50 social-proof">
+             <div className="flex items-center gap-2">
+                <div className="flex -space-x-2.5">
                    {socialProofAvatars.map((url, i) => (
-                     <div key={i} className="w-12 h-12 rounded-full border-4 border-white shadow-xl overflow-hidden bg-slate-100">
-                       <img 
-                        src={url} 
-                        className="w-full h-full object-cover" 
-                        alt="User Avatar"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=User+${i}&background=random`;
-                        }}
-                       />
+                     <div key={i} className="w-8 h-8 rounded-full border-2 border-white shadow shadow-black/5 overflow-hidden bg-slate-100">
+                       <img src={url} className="w-full h-full object-cover" />
                      </div>
                    ))}
                 </div>
                 <div>
-                   <p className="text-[10px] font-black text-slate-950 uppercase tracking-widest leading-none mb-1">Inspirando +10k alunos</p>
-                   <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">Comunidade global ativa</p>
+                   <p className="text-[8px] font-black text-slate-950 uppercase tracking-widest leading-none mb-0.5">+10k Alunos</p>
+                   <p className="text-[7px] font-bold text-slate-300 uppercase tracking-widest">Ativos Globalmente</p>
                 </div>
              </div>
-             <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 shadow-sm">
-               <ShieldCheck size={24} />
-             </div>
+             <ShieldCheck className="text-emerald-500/20" size={24} />
           </div>
         </div>
       </div>
 
-      {/* LADO DIREITO: 55% - High Impact Hero */}
-      <div className="hidden lg:block lg:w-[55%] relative overflow-hidden bg-slate-950">
+      {/* LADO DIREITO: Hero (Compacto) */}
+      <div className="hidden lg:block lg:w-[60%] xl:w-[65%] h-full relative overflow-hidden bg-slate-950">
         <img 
           src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?q=80&w=2070&auto=format&fit=crop" 
-          className="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-[20s] ease-linear opacity-80" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" 
           alt="Pilates Session"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-end p-24">
-           <div className="max-w-xl space-y-10 animate-in slide-in-from-right duration-1000">
-              <div className="flex items-center gap-4">
-                 <div className="h-px w-20 bg-emerald-500" />
-                 <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.6em]">Premium Studio Platform</span>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent flex flex-col justify-end p-12 xl:p-16">
+           <div className="max-w-xl space-y-4">
+              <div className="flex items-center gap-3">
+                 <div className="h-px w-10 bg-emerald-500" />
+                 <span className="text-[8px] font-black text-emerald-400 uppercase tracking-[0.4em]">Premium Studio Platform</span>
               </div>
-              <h2 className="text-8xl font-black text-white leading-[0.85] tracking-tighter uppercase italic">
+              <h2 className="hero-text text-5xl xl:text-6xl font-black text-white leading-[0.85] tracking-tighter uppercase italic">
                  EQUILÍBRIO <br />
                  EFICIÊNCIA <br />
                  <span className="text-emerald-500">EVOLUÇÃO.</span>
               </h2>
-              <p className="text-white/50 text-2xl font-medium leading-relaxed max-w-md">
-                 Simplifique sua rotina administrativa e foque no que realmente importa: o movimento dos seus alunos.
+              <p className="text-white/40 text-lg font-medium leading-relaxed max-w-sm">
+                 Simplifique sua rotina administrativa e foque no movimento.
               </p>
-              <div className="flex gap-12 pt-12 border-t border-white/10">
+              <div className="flex gap-8 pt-6 border-t border-white/10">
                  <div>
-                    <p className="text-3xl font-black text-white tracking-tighter italic leading-none">99%</p>
-                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-2">Uptime Garantido</p>
+                    <p className="text-xl font-black text-white tracking-tighter italic leading-none">99%</p>
+                    <p className="text-[8px] font-black text-emerald-500 uppercase tracking-widest mt-1.5">Uptime</p>
                  </div>
                  <div>
-                    <p className="text-3xl font-black text-white tracking-tighter italic leading-none">SSL</p>
-                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-2">Acesso Seguro</p>
+                    <p className="text-xl font-black text-white tracking-tighter italic leading-none">SSL</p>
+                    <p className="text-[8px] font-black text-emerald-500 uppercase tracking-widest mt-1.5">Seguro</p>
                  </div>
               </div>
            </div>
