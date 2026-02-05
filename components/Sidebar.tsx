@@ -17,7 +17,8 @@ import {
   ChevronRight,
   Target,
   ShieldCheck,
-  Settings
+  Settings,
+  Truck
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -49,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
         { id: 'students', label: 'Alunos', icon: Users },
         { id: 'finance', label: 'Financeiro', icon: DollarSign },
         { id: 'staff', label: 'Equipe', icon: Briefcase },
+        { id: 'suppliers', label: 'Fornecedores', icon: Truck },
         { id: 'permissions', label: 'Permissões', icon: ShieldCheck },
       ]
     },
