@@ -302,15 +302,18 @@ const App: React.FC = () => {
                         <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Meu Perfil</span>
                       </button>
 
-                      <button 
-                        onClick={() => { setActiveTab('manual'); setIsUserMenuOpen(false); }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group"
-                      >
-                        <div className="p-2 bg-emerald-50 text-emerald-500 rounded-xl group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                          <BookOpen size={18} />
-                        </div>
-                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Manual do Sistema</span>
-                      </button>
+                      {/* OCULTAR MANUAL PARA ALUNOS */}
+                      {userRole !== UserRole.STUDENT && (
+                        <button 
+                          onClick={() => { setActiveTab('manual'); setIsUserMenuOpen(false); }}
+                          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group"
+                        >
+                          <div className="p-2 bg-emerald-50 text-emerald-500 rounded-xl group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                            <BookOpen size={18} />
+                          </div>
+                          <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Manual do Sistema</span>
+                        </button>
+                      )}
 
                       <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
                         <div className="p-2 bg-slate-100 text-slate-500 rounded-xl group-hover:bg-slate-900 group-hover:text-white transition-all">

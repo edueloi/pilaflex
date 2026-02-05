@@ -20,7 +20,9 @@ import {
   CircleDot,
   CheckCircle2,
   Clock,
-  Zap
+  Zap,
+  Save,
+  Palette
 } from 'lucide-react';
 
 interface Task {
@@ -79,21 +81,6 @@ const initialBoards: Board[] = [
       'review': [],
       'done': []
     }
-  },
-  {
-    id: 'b3',
-    name: 'Expansão Unidade 02',
-    color: 'purple',
-    lastUpdate: 'há 3 dias',
-    icon: <Layers size={20} />,
-    tasks: {
-      'todo': [],
-      'progress': [
-        { id: 'e1', title: 'Pintura Fachada', description: 'Acompanhar serviço de pintura externa.', priority: 'média', category: 'Obras', dueDate: '22 Dez', assignee: 'Engenheiro' },
-      ],
-      'review': [],
-      'done': []
-    }
   }
 ];
 
@@ -105,6 +92,11 @@ const TasksKanban: React.FC = () => {
   const [draggedFromCol, setDraggedFromCol] = useState<ColumnType | null>(null);
   const [activeDropZone, setActiveDropZone] = useState<string | null>(null);
   const [showAddTask, setShowAddTask] = useState(false);
+  const [showCreateBoard, setShowCreateBoard] = useState(false);
+  
+  // States para novo quadro
+  const [newBoardName, setNewBoardName] = useState('');
+  const [newBoardColor, setNewBoardColor] = useState('emerald');
 
   const activeBoard = useMemo(() => 
     boards.find(b => b.id === selectedBoardId), 
@@ -114,6 +106,29 @@ const TasksKanban: React.FC = () => {
   const handleOpenBoard = (id: string) => {
     setSelectedBoardId(id);
     setView('board');
+  };
+
+  const handleCreateBoard = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newBoardName.trim()) return;
+
+    const newBoard: Board = {
+      id: `b-${Date.now()}`,
+      name: newBoardName,
+      color: newBoardColor,
+      lastUpdate: 'Agora',
+      icon: <Layers size={20} />,
+      tasks: {
+        todo: [],
+        progress: [],
+        review: [],
+        done: []
+      }
+    };
+
+    setBoards([newBoard, ...boards]);
+    setNewBoardName('');
+    setShowCreateBoard(false);
   };
 
   const onDragStart = (e: React.DragEvent, taskId: string, colId: ColumnType) => {
@@ -175,7 +190,10 @@ const TasksKanban: React.FC = () => {
             <h1 className="text-5xl font-black text-slate-900 tracking-tighter italic uppercase leading-none">Central de <span className="text-emerald-500">Quadros</span></h1>
             <p className="text-slate-500 font-medium text-lg">Selecione uma área para gerenciar o fluxo de trabalho.</p>
           </div>
-          <button className="flex items-center justify-center gap-4 bg-slate-950 text-white px-10 py-5 rounded-[28px] hover:bg-emerald-600 shadow-2xl transition-all font-black text-xs uppercase tracking-widest active:scale-95 group">
+          <button 
+            onClick={() => setShowCreateBoard(true)}
+            className="flex items-center justify-center gap-4 bg-slate-950 text-white px-10 py-5 rounded-[28px] hover:bg-emerald-600 shadow-2xl transition-all font-black text-xs uppercase tracking-widest active:scale-95 group"
+          >
              <Plus size={20} className="group-hover:rotate-90 transition-transform" /> Criar Novo Quadro
           </button>
         </header>
@@ -197,7 +215,7 @@ const TasksKanban: React.FC = () => {
                        <div className={`w-16 h-16 rounded-[24px] bg-slate-950 text-white flex items-center justify-center shadow-2xl group-hover:rotate-6 transition-transform`}>
                           {board.icon}
                        </div>
-                       <button className="p-3 bg-slate-50 rounded-xl text-slate-300 hover:text-slate-900 transition-colors">
+                       <button onClick={(e) => {e.stopPropagation();}} className="p-3 bg-slate-50 rounded-xl text-slate-300 hover:text-slate-900 transition-colors">
                           <MoreHorizontal size={20} />
                        </button>
                     </div>
@@ -213,7 +231,10 @@ const TasksKanban: React.FC = () => {
                      </div>
                      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full bg-emerald-500 transition-all duration-1000`} 
+                          className={`h-full transition-all duration-1000 ${
+                            board.color === 'emerald' ? 'bg-emerald-500' : 
+                            board.color === 'blue' ? 'bg-blue-500' : 'bg-purple-500'
+                          }`} 
                           style={{ width: `${progress}%` }} 
                         />
                      </div>
@@ -229,11 +250,81 @@ const TasksKanban: React.FC = () => {
                      </div>
                   </div>
 
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[40px] rounded-full -mr-10 -mt-10" />
+                  <div className={`absolute top-0 right-0 w-32 h-32 opacity-10 blur-[40px] rounded-full -mr-10 -mt-10 ${
+                    board.color === 'emerald' ? 'bg-emerald-500' : 
+                    board.color === 'blue' ? 'bg-blue-500' : 'bg-purple-500'
+                  }`} />
                </div>
              );
            })}
+           
+           <button 
+             onClick={() => setShowCreateBoard(true)}
+             className="border-4 border-dashed border-slate-100 rounded-[48px] flex flex-col items-center justify-center gap-4 p-8 text-slate-300 hover:border-emerald-200 hover:text-emerald-500 transition-all group min-h-[320px]"
+           >
+              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
+                <Plus size={40} className="group-hover:rotate-90 transition-transform" />
+              </div>
+              <span className="font-black text-xs uppercase tracking-widest">Criar Novo Quadro</span>
+           </button>
         </div>
+
+        {/* MODAL CRIAR QUADRO */}
+        {showCreateBoard && (
+          <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[200] flex items-center justify-center p-4">
+             <div className="bg-white w-full max-w-lg rounded-[48px] shadow-2xl animate-in zoom-in-95 duration-300 border border-white/20 overflow-hidden">
+                <form onSubmit={handleCreateBoard}>
+                  <div className="p-8 md:p-10 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <div>
+                        <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Novo <span className="text-emerald-500">Quadro</span></h2>
+                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-2">Defina o nome e a cor do ecossistema</p>
+                    </div>
+                    <button type="button" onClick={() => setShowCreateBoard(false)} className="w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm">
+                      <X size={24} />
+                    </button>
+                  </div>
+                  <div className="p-8 md:p-10 space-y-8">
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome do Quadro</label>
+                        <input 
+                          autoFocus
+                          required
+                          value={newBoardName}
+                          onChange={(e) => setNewBoardName(e.target.value)}
+                          className="w-full p-6 bg-slate-50 border border-slate-100 rounded-3xl font-black text-lg outline-none focus:bg-white focus:border-emerald-500 transition-all italic tracking-tighter" 
+                          placeholder="Ex: Expansão Studio Sul" 
+                        />
+                    </div>
+                    
+                    <div className="space-y-4">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                          <Palette size={14} /> Cor de Destaque
+                        </label>
+                        <div className="flex gap-4">
+                          {[
+                            { id: 'emerald', color: 'bg-emerald-500' },
+                            { id: 'blue', color: 'bg-blue-500' },
+                            { id: 'purple', color: 'bg-purple-500' },
+                            { id: 'rose', color: 'bg-rose-500' },
+                            { id: 'amber', color: 'bg-amber-500' },
+                          ].map(c => (
+                            <button
+                              key={c.id}
+                              type="button"
+                              onClick={() => setNewBoardColor(c.id)}
+                              className={`w-10 h-10 rounded-2xl ${c.color} transition-all ${newBoardColor === c.id ? 'ring-4 ring-slate-900 ring-offset-4 scale-110' : 'opacity-40 hover:opacity-100'}`}
+                            />
+                          ))}
+                        </div>
+                    </div>
+                  </div>
+                  <div className="p-8 md:p-10 bg-slate-50 border-t border-slate-100">
+                    <button type="submit" className="w-full py-6 bg-slate-950 text-white rounded-[28px] font-black uppercase text-xs tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all active:scale-95">Criar Ecossistema</button>
+                  </div>
+                </form>
+             </div>
+          </div>
+        )}
       </div>
     );
   }
