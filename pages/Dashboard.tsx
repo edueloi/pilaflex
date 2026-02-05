@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Users, 
   TrendingUp, 
@@ -17,7 +17,12 @@ import {
   MessageSquare,
   ChevronRight,
   Target,
-  AlertCircle
+  AlertCircle,
+  X,
+  Phone,
+  Gift,
+  CheckCircle2,
+  Share2
 } from 'lucide-react';
 import { 
   XAxis, 
@@ -47,7 +52,17 @@ const retentionData = [
   { name: 'Churn', value: 5, color: '#f43f5e' },
 ];
 
+const riskStudents = [
+  { id: 1, name: 'Juliana Paes', reason: 'Faltou 3 aulas seguidas', risk: 'Alto', phone: '5511999999999' },
+  { id: 2, name: 'Marcos Frota', reason: 'Plano vence em 4 dias', risk: 'Médio', phone: '5511888888888' },
+  { id: 3, name: 'Sérgio Loroza', reason: 'Não acessa o App há 15 dias', risk: 'Alto', phone: '5511777777777' },
+  { id: 4, name: 'Fátima Bernardes', reason: 'Relatou dor crônica pós-aula', risk: 'Médio', phone: '5511666666666' },
+  { id: 5, name: 'Antônio Fagundes', reason: 'Faltou 2 aulas seguidas', risk: 'Baixo', phone: '5511555555555' },
+];
+
 const Dashboard: React.FC = () => {
+  const [showRetentionCenter, setShowRetentionCenter] = useState(false);
+
   return (
     <div className="p-4 sm:p-6 md:p-8 xl:p-12 space-y-10 animate-in fade-in duration-700 max-w-[1600px] mx-auto overflow-x-hidden pb-40">
       
@@ -110,19 +125,13 @@ const Dashboard: React.FC = () => {
 
       {/* ANALYTICS GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Performance Central Chart */}
         <div className="lg:col-span-8 bg-white p-10 rounded-[48px] shadow-sm border border-slate-100 flex flex-col">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
              <div>
                 <h3 className="text-2xl font-black text-slate-950 uppercase tracking-tighter italic leading-none">Performance <span className="text-emerald-500">Financeira</span></h3>
                 <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-2">Comparativo Receita vs Volume de Aulas</p>
              </div>
-             <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl">
-                <button className="px-6 py-2 bg-white text-slate-950 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-sm">Receita</button>
-                <button className="px-6 py-2 text-slate-400 text-[9px] font-black uppercase tracking-widest hover:text-slate-600">Aulas</button>
-             </div>
           </div>
-          
           <div className="flex-1 min-h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={mainChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -145,16 +154,13 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Actionable Sidebar Widgets */}
         <div className="lg:col-span-4 space-y-8">
-           {/* In-Studio Now Widget */}
            <div className="bg-slate-950 rounded-[48px] p-10 text-white relative overflow-hidden shadow-2xl h-full">
               <div className="relative z-10">
                  <div className="flex justify-between items-center mb-10">
                     <h3 className="text-xl font-black italic uppercase tracking-tighter leading-none">No Studio <span className="text-emerald-500">Agora</span></h3>
                     <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-[9px] font-black animate-pulse uppercase tracking-widest">Live</span>
                  </div>
-
                  <div className="space-y-4">
                     {[
                       { name: 'Maria Eduarda', type: 'Reformer Pro', time: '14:00 - 15:00', avatar: 'ME' },
@@ -177,7 +183,6 @@ const Dashboard: React.FC = () => {
                       </div>
                     ))}
                  </div>
-
                  <button className="w-full mt-10 py-5 bg-white text-slate-950 rounded-[28px] font-black uppercase text-[10px] tracking-widest shadow-2xl hover:bg-emerald-500 hover:text-white transition-all active:scale-95 flex items-center justify-center gap-2">
                     Visualizar Agenda <ChevronRight size={16} />
                  </button>
@@ -212,7 +217,12 @@ const Dashboard: React.FC = () => {
                      <AlertCircle size={20} className="text-rose-500" />
                      <p className="text-[10px] font-black text-rose-900 uppercase">5 Alunos em Risco</p>
                   </div>
-                  <button className="text-[9px] font-black text-rose-600 uppercase underline decoration-2">Agir Agora</button>
+                  <button 
+                    onClick={() => setShowRetentionCenter(true)}
+                    className="text-[9px] font-black text-rose-600 uppercase underline decoration-2 hover:text-rose-700 transition-colors"
+                  >
+                    Agir Agora
+                  </button>
                </div>
             </div>
          </div>
@@ -233,20 +243,72 @@ const Dashboard: React.FC = () => {
                   "O padrão indica que as manhãs de terça e quinta são os horários mais rentáveis. Recomendamos abrir mais 2 turmas de Reformer nestes períodos para aumentar o lucro líquido em até 15%."
                </p>
             </div>
-            <div className="relative z-10 flex flex-col gap-4 w-full md:w-auto">
-               <button className="px-10 py-5 bg-slate-950 text-white rounded-[28px] font-black uppercase text-[11px] tracking-widest shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-3">
-                  <MessageSquare size={18} /> Ver Relatório IA
-               </button>
-               <button className="px-10 py-5 bg-white/20 backdrop-blur-xl border border-white/30 text-white rounded-[28px] font-black uppercase text-[11px] tracking-widest hover:bg-white/30 transition-all flex items-center justify-center gap-3">
-                  Aplicar Sugestão
-               </button>
-            </div>
-            
-            {/* Background Effects */}
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 blur-[120px] rounded-full -mr-32 -mb-32 animate-pulse" />
-            <div className="absolute top-0 left-0 w-64 h-64 bg-slate-900/10 blur-[100px] rounded-full -ml-32 -mt-32" />
          </div>
       </div>
+
+      {/* MODAL: CENTRO DE RETENÇÃO ATIVA */}
+      {showRetentionCenter && (
+        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-[300] flex items-center justify-center p-4">
+           <div className="bg-white w-full max-w-4xl rounded-[60px] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 border border-white/20 flex flex-col max-h-[90vh]">
+              <div className="p-10 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                 <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 bg-rose-500 text-white rounded-[24px] flex items-center justify-center shadow-lg shadow-rose-500/20 transform -rotate-3">
+                       <AlertCircle size={32} />
+                    </div>
+                    <div>
+                       <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Centro de <span className="text-rose-500">Recuperação Ativa</span></h2>
+                       <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Intervenção estratégica para evitar Churn</p>
+                    </div>
+                 </div>
+                 <button onClick={() => setShowRetentionCenter(false)} className="w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm">
+                   <X size={24} />
+                 </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-10 space-y-6">
+                 {riskStudents.map((student) => (
+                   <div key={student.id} className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 hover:border-rose-200 transition-all group">
+                      <div className="flex items-center gap-5 flex-1">
+                         <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:bg-rose-50 group-hover:text-rose-500 transition-colors text-xl">
+                            {student.name[0]}
+                         </div>
+                         <div>
+                            <div className="flex items-center gap-2 mb-1">
+                               <h3 className="text-lg font-black text-slate-900 uppercase italic tracking-tighter">{student.name}</h3>
+                               <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest ${student.risk === 'Alto' ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'}`}>
+                                  Risco {student.risk}
+                               </span>
+                            </div>
+                            <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{student.reason}</p>
+                         </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                         <button className="flex items-center gap-2 px-5 py-3.5 bg-emerald-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/10 active:scale-95">
+                            <Phone size={14} /> WhatsApp
+                         </button>
+                         <button className="flex items-center gap-2 px-5 py-3.5 bg-slate-950 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg active:scale-95">
+                            <Gift size={14} /> Voucher
+                         </button>
+                         <button className="p-3.5 bg-slate-50 text-slate-400 rounded-2xl hover:bg-rose-500 hover:text-white transition-all border border-slate-100">
+                            <CheckCircle2 size={16} />
+                         </button>
+                      </div>
+                   </div>
+                 ))}
+              </div>
+
+              <div className="p-10 bg-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-8 border-t border-white/5">
+                 <div className="flex items-center gap-4">
+                    <MessageSquare className="text-emerald-500" size={24} />
+                    <p className="text-[10px] font-black uppercase tracking-widest leading-relaxed max-w-sm">Dica da IA: Alunos recuperados aumentam o faturamento em até 22% através de indicações.</p>
+                 </div>
+                 <button className="w-full md:w-auto px-10 py-5 bg-white text-slate-950 rounded-[28px] font-black uppercase text-[10px] tracking-widest hover:bg-emerald-500 hover:text-white transition-all">Relatório Completo de Churn</button>
+              </div>
+           </div>
+        </div>
+      )}
+
     </div>
   );
 };

@@ -17,6 +17,7 @@ import MyTraining from './pages/MyTraining';
 import TrainingCenter from './pages/TrainingCenter';
 import Profile from './pages/Profile';
 import Subscription from './pages/Subscription';
+import Manual from './pages/Manual';
 import { 
   Bell, 
   User as UserIcon, 
@@ -35,7 +36,8 @@ import {
   Trash2,
   Zap,
   CheckCircle2,
-  Clock
+  Clock,
+  BookOpen
 } from 'lucide-react';
 
 const Page404: React.FC<{ onReset: () => void }> = ({ onReset }) => (
@@ -137,6 +139,7 @@ const App: React.FC = () => {
       case 'courses': return <Courses onViewingCourse={setHideLayout} />;
       case 'profile': return <Profile role={userRole} />;
       case 'subscription': return <Subscription />;
+      case 'manual': return <Manual />;
       case 'my-certificates': return (
         <div className="p-8 space-y-8 animate-in fade-in duration-700">
           <header>
@@ -295,8 +298,18 @@ const App: React.FC = () => {
                         <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Meu Perfil</span>
                       </button>
 
-                      <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
+                      <button 
+                        onClick={() => { setActiveTab('manual'); setIsUserMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group"
+                      >
                         <div className="p-2 bg-emerald-50 text-emerald-500 rounded-xl group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                          <BookOpen size={18} />
+                        </div>
+                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Manual do Sistema</span>
+                      </button>
+
+                      <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
+                        <div className="p-2 bg-slate-100 text-slate-500 rounded-xl group-hover:bg-slate-900 group-hover:text-white transition-all">
                           <Settings size={18} />
                         </div>
                         <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Configurações</span>
