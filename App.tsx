@@ -101,17 +101,17 @@ const App: React.FC = () => {
       case 'my-training': return <MyTraining />;
       case 'courses': return <Courses onViewingCourse={setHideLayout} />;
       case 'my-certificates': return (
-        <div className="p-8 space-y-8 animate-in fade-in duration-700 slide-in-from-bottom-6">
+        <div className="p-8 space-y-8 animate-in fade-in duration-700">
           <header>
             <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic uppercase">Meus Certificados</h1>
-            <p className="text-slate-500 font-medium">Suas conquistas e especializações na plataforma.</p>
+            <p className="text-slate-500 font-medium">Suas conquistas na plataforma.</p>
           </header>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { title: 'Fundamentos do Mat Pilates', date: '12/10/2024', hours: '20h' },
               { title: 'Anatomia para Iniciantes', date: '05/09/2024', hours: '12h' },
             ].map((cert, i) => (
-              <div key={i} className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm hover:border-emerald-500 transition-all group cursor-pointer relative overflow-hidden">
+              <div key={i} className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm hover:border-emerald-500 transition-all group relative overflow-hidden">
                 <div className="relative z-10 flex flex-col items-center text-center">
                    <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform group-hover:bg-emerald-500 group-hover:text-white">
                       <Award size={40} />
@@ -124,7 +124,6 @@ const App: React.FC = () => {
                    </div>
                    <button className="mt-8 text-emerald-500 font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 hover:underline underline-offset-4">Download PDF</button>
                 </div>
-                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 blur-3xl rounded-full"></div>
               </div>
             ))}
           </div>
@@ -147,9 +146,9 @@ const App: React.FC = () => {
         />
       )}
       
-      <main className={`flex-1 min-h-screen flex flex-col transition-all duration-500 ${!hideLayout ? 'lg:pl-72' : ''}`}>
+      <main className={`flex-1 flex flex-col transition-all duration-500 ${!hideLayout ? 'lg:pl-72' : ''}`}>
         {!hideLayout && (
-          <header className="h-24 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 md:px-10 flex items-center justify-between sticky top-0 z-40">
+          <header className="h-24 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 md:px-10 flex items-center justify-between sticky top-0 z-40 shrink-0">
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => setIsSidebarOpen(true)}
@@ -168,22 +167,17 @@ const App: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3 md:gap-8">
-              <div className="hidden lg:flex items-center relative group">
-                 <Search className="absolute left-4 text-slate-300 group-focus-within:text-emerald-500 transition-colors" size={18} />
-                 <input type="text" placeholder="Comando rápido (Alt + K)..." className="pl-12 pr-6 py-3 bg-slate-50 border-2 border-transparent focus:border-emerald-500 rounded-full text-sm outline-none w-56 focus:w-80 transition-all font-bold shadow-inner" />
-              </div>
-              
               <button className="relative p-3.5 text-slate-400 hover:text-emerald-500 transition-colors bg-white rounded-2xl border-2 border-slate-50 shadow-sm hover:border-emerald-100">
                 <Bell size={22} />
-                <span className="absolute top-3 right-3 w-3 h-3 bg-rose-500 rounded-full border-2 border-white animate-pulse shadow-sm"></span>
+                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse"></span>
               </button>
 
               <div className="flex items-center gap-4 pl-4 md:pl-8 border-l border-slate-100">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-black text-slate-900 leading-none tracking-tight">
+                  <p className="text-sm font-black text-slate-900 leading-none tracking-tight uppercase italic">
                     {userRole === UserRole.PROFESSIONAL ? 'Carlos Alberto' : 'Aluno Demo'}
                   </p>
-                  <p className="text-[9px] uppercase font-black text-emerald-600 tracking-widest mt-1.5 italic">
+                  <p className="text-[9px] uppercase font-black text-emerald-600 tracking-widest mt-1.5">
                     {userRole} Member
                   </p>
                 </div>
@@ -195,17 +189,18 @@ const App: React.FC = () => {
           </header>
         )}
 
+        {/* Scroll habilitado aqui para o conteúdo do sistema */}
         <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
           {renderContent()}
+          
+          {!hideLayout && (
+            <footer className="p-8 text-center bg-white border-t border-slate-100 mt-auto">
+              <p className="text-slate-300 text-[10px] font-black uppercase tracking-[0.4em] italic">
+                PilaFlex Global Standards &bull; Cloud Optimized &bull; 2024
+              </p>
+            </footer>
+          )}
         </div>
-        
-        {!hideLayout && (
-          <footer className="p-10 text-center bg-white border-t border-slate-100">
-            <p className="text-slate-300 text-[11px] font-black uppercase tracking-[0.4em] italic">
-              PilaFlex Global Standards &bull; Cloud Optimized &bull; 2024
-            </p>
-          </footer>
-        )}
       </main>
     </div>
   );

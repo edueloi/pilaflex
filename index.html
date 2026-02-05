@@ -7,7 +7,7 @@
     <title>PilaFlex - Gestão de Pilates & Bem-Estar</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="PilaFlex é a plataforma definitiva para gestão de estúdios de pilates, controle financeiro premium.">
+    <meta name="description" content="PilaFlex é a plataforma definitiva para gestão de estúdios de pilates.">
     
     <!-- Favicon SVG -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23020617%22/><path d=%22M50 20C35 20 25 35 25 50C25 65 35 80 50 80C65 80 75 65 75 50C75 35 65 20 50 20ZM50 70C40 70 35 62 35 50C35 38 40 30 50 30C60 30 65 38 65 50C65 62 60 70 50 70Z%22 fill=%22%2310b981%22/><circle cx=%2250%22 cy=%2250%22 r=%228%22 fill=%22%2310b981%22/></svg>">
@@ -20,33 +20,21 @@
           height: 100%; 
           margin: 0; 
           padding: 0;
-          overflow: hidden; /* Trava o scroll global */
+          overflow-x: hidden; /* Permite scroll vertical mas trava horizontal */
         }
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         
         /* Scrollbars Minimalistas */
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
         
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
-
-        /* Ajustes agressivos de altura para Notebooks (ex: 1366x768) */
-        @media (max-height: 768px) {
-          .login-container { padding: 2rem !important; }
-          .headline-main { font-size: 2.25rem !important; }
-          .hero-text { font-size: 3.5rem !important; }
-          .input-group { margin-bottom: 0.75rem !important; }
-          .logo-box { transform: scale(0.9); transform-origin: left; }
-          .social-proof { display: none !important; } /* Esconde em telas curtas */
-        }
-
-        @media (max-height: 650px) {
-          .headline-main { font-size: 1.8rem !important; }
-          .hero-text { font-size: 2.5rem !important; }
-          .login-p { font-size: 0.8rem !important; }
+        /* Ajustes de Altura para Notebooks */
+        @media (max-height: 800px) {
+          .compact-notebook-p { padding: 1.5rem !important; }
+          .compact-notebook-gap { gap: 1rem !important; }
+          .compact-notebook-text { font-size: 1.75rem !important; }
+          .compact-notebook-input { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
         }
     </style>
 <script type="importmap">
@@ -63,7 +51,7 @@
 </script>
 </head>
 <body class="bg-slate-50 text-slate-900">
-    <div id="root" class="h-full"></div>
+    <div id="root" class="min-h-screen"></div>
     <script type="module" src="/index.tsx"></script>
 </body>
 </html>
