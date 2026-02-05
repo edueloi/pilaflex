@@ -94,8 +94,8 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
         ${isOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0 lg:w-72'}
       `}>
         {/* Logo Section */}
-        <div className="p-8 pb-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 group cursor-pointer">
+        <div className="p-8 pb-4 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => handleNavClick(role === UserRole.STUDENT ? 'student-dashboard' : 'dashboard')}>
             <div className="bg-emerald-500 p-2.5 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:rotate-12 transition-transform duration-300">
               <Award className="w-6 h-6 text-white" />
             </div>
@@ -109,8 +109,8 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
           </button>
         </div>
 
-        {/* Navigation Content */}
-        <div className="flex-1 mt-6 px-4 space-y-8 overflow-y-auto custom-scrollbar pb-10">
+        {/* Navigation Content - Improved Scroll */}
+        <nav className="flex-1 mt-6 px-4 space-y-8 overflow-y-auto custom-scrollbar pb-10">
           {sections.map((section, idx) => {
             if (!section.roles.includes(role)) return null;
             return (
@@ -154,29 +154,37 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
 
           {/* Upgrade Card (Pro context) */}
           {role !== UserRole.STUDENT && (
-            <div className="mx-2 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl mt-10 relative overflow-hidden group">
+            <div className="mx-2 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl mt-10 relative overflow-hidden group shrink-0">
                <div className="relative z-10">
                   <ShieldCheck className="text-emerald-500 mb-3" size={24} />
                   <p className="text-xs font-black text-white mb-1 italic">PLANO GOLD</p>
                   <p className="text-[10px] font-medium text-emerald-100/60 leading-relaxed mb-4">Até 10 instrutores ativos.</p>
-                  <button className="text-[10px] font-black text-emerald-400 uppercase tracking-widest hover:text-white transition-colors">Falar com Gerente</button>
+                  <button 
+                    onClick={() => handleNavClick('subscription')}
+                    className="text-[10px] font-black text-emerald-400 uppercase tracking-widest hover:text-white transition-colors"
+                  >
+                    Gerenciar Assinatura
+                  </button>
                </div>
                <div className="absolute bottom-0 right-0 w-24 h-24 bg-emerald-500/10 blur-2xl rounded-full -mb-10 -mr-10 group-hover:bg-emerald-500/20 transition-all" />
             </div>
           )}
-        </div>
+        </nav>
 
-        {/* User Profile Area */}
-        <div className="p-6 border-t border-white/5 bg-slate-900/30">
-          <div className="flex items-center gap-4 mb-6 px-2">
+        {/* User Profile Area - Sticky Bottom */}
+        <div className="p-6 border-t border-white/5 bg-slate-900/30 shrink-0">
+          <div 
+            className="flex items-center gap-4 mb-6 px-2 cursor-pointer group"
+            onClick={() => handleNavClick('profile')}
+          >
             <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center font-black text-white shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center font-black text-white shadow-xl group-hover:rotate-6 transition-all">
                 {role === UserRole.STUDENT ? 'A' : 'C'}
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full" />
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="text-sm font-black text-white truncate leading-none mb-1.5 uppercase italic tracking-tighter">
+              <p className="text-sm font-black text-white truncate leading-none mb-1.5 uppercase italic tracking-tighter group-hover:text-emerald-400">
                 {role === UserRole.STUDENT ? 'Aluno Demo' : 'Carlos Alberto'}
               </p>
               <div className="flex items-center gap-1.5">

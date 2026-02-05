@@ -14,6 +14,8 @@ import Agenda from './pages/Agenda';
 import TasksKanban from './pages/TasksKanban';
 import MyTraining from './pages/MyTraining';
 import TrainingCenter from './pages/TrainingCenter';
+import Profile from './pages/Profile';
+import Subscription from './pages/Subscription';
 import { 
   Bell, 
   User as UserIcon, 
@@ -27,7 +29,12 @@ import {
   UserCircle,
   CreditCard,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  X,
+  Trash2,
+  Zap,
+  CheckCircle2,
+  Clock
 } from 'lucide-react';
 
 const Page404: React.FC<{ onReset: () => void }> = ({ onReset }) => (
@@ -60,6 +67,13 @@ const App: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hideLayout, setHideLayout] = useState(false); 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'Novo Aluno Registrado', desc: 'Maria Eduarda acaba de se matricular no plano Gold.', time: '12 min ago', icon: <CheckCircle2 size={16} />, type: 'success' },
+    { id: 2, title: 'Manutenção Preventiva', desc: 'O Reformer 04 precisa de lubrificação técnica.', time: '2 horas ago', icon: <Zap size={16} />, type: 'warning' },
+    { id: 3, title: 'Assinatura PilaFlex', desc: 'Sua fatura de Dezembro foi processada com sucesso.', time: 'Ontem', icon: <CreditCard size={16} />, type: 'info' }
+  ]);
+  
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,7 +90,6 @@ const App: React.FC = () => {
     }
   }, [isAuthenticated, userRole]);
 
-  // Fechar menu ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -120,6 +133,8 @@ const App: React.FC = () => {
       case 'student-dashboard': return <StudentDashboard />;
       case 'my-training': return <MyTraining />;
       case 'courses': return <Courses onViewingCourse={setHideLayout} />;
+      case 'profile': return <Profile role={userRole} />;
+      case 'subscription': return <Subscription />;
       case 'my-certificates': return (
         <div className="p-8 space-y-8 animate-in fade-in duration-700">
           <header>
@@ -187,10 +202,58 @@ const App: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3 md:gap-8">
-              <button className="relative p-3.5 text-slate-400 hover:text-emerald-500 transition-colors bg-white rounded-2xl border-2 border-slate-50 shadow-sm hover:border-emerald-100">
-                <Bell size={22} />
-                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse"></span>
-              </button>
+              {/* NOTIFICATIONS */}
+              <div className="relative">
+                <button 
+                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                  className="relative p-3.5 text-slate-400 hover:text-emerald-500 transition-colors bg-white rounded-2xl border-2 border-slate-50 shadow-sm hover:border-emerald-100"
+                >
+                  <Bell size={22} />
+                  {notifications.length > 0 && (
+                    <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse"></span>
+                  )}
+                </button>
+
+                {isNotificationsOpen && (
+                  <div className="absolute right-0 mt-4 w-80 md:w-96 bg-white rounded-[32px] shadow-2xl border border-slate-100 p-2 z-[100] animate-in fade-in zoom-in-95 duration-200">
+                    <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+                       <h3 className="text-xs font-black uppercase text-slate-400 tracking-widest">Centro de Alertas</h3>
+                       <button onClick={() => setNotifications([])} className="text-[9px] font-black uppercase text-emerald-500 hover:text-emerald-600 transition-colors flex items-center gap-2">
+                         <Trash2 size={12} /> Limpar Tudo
+                       </button>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto custom-scrollbar p-2 space-y-1">
+                      {notifications.length > 0 ? notifications.map(notif => (
+                        <div key={notif.id} className="p-4 rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 group">
+                           <div className="flex gap-4">
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                                notif.type === 'success' ? 'bg-emerald-50 text-emerald-500' : 
+                                notif.type === 'warning' ? 'bg-amber-50 text-amber-500' : 'bg-blue-50 text-blue-500'
+                              }`}>
+                                {notif.icon}
+                              </div>
+                              <div className="flex-1 space-y-1">
+                                 <p className="text-xs font-black text-slate-900 leading-tight group-hover:text-emerald-600 transition-colors uppercase italic tracking-tighter">{notif.title}</p>
+                                 <p className="text-[10px] text-slate-400 leading-relaxed font-medium">{notif.desc}</p>
+                                 <div className="flex items-center gap-1.5 pt-1 text-slate-300">
+                                   <Clock size={10} />
+                                   <span className="text-[8px] font-black uppercase tracking-widest">{notif.time}</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                      )) : (
+                        <div className="py-20 text-center space-y-4">
+                           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-200">
+                             <Bell size={24} />
+                           </div>
+                           <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Silêncio total por aqui</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* USER PROFILE & DROPDOWN */}
               <div className="relative" ref={userMenuRef}>
@@ -220,7 +283,10 @@ const App: React.FC = () => {
                     </div>
                     
                     <div className="space-y-1">
-                      <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
+                      <button 
+                        onClick={() => { setActiveTab('profile'); setIsUserMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group"
+                      >
                         <div className="p-2 bg-blue-50 text-blue-500 rounded-xl group-hover:bg-blue-500 group-hover:text-white transition-all">
                           <UserCircle size={18} />
                         </div>
@@ -234,12 +300,17 @@ const App: React.FC = () => {
                         <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Configurações</span>
                       </button>
 
-                      <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
-                        <div className="p-2 bg-amber-50 text-amber-500 rounded-xl group-hover:bg-amber-500 group-hover:text-white transition-all">
-                          <CreditCard size={18} />
-                        </div>
-                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Assinatura</span>
-                      </button>
+                      {userRole !== UserRole.STUDENT && (
+                        <button 
+                          onClick={() => { setActiveTab('subscription'); setIsUserMenuOpen(false); }}
+                          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group"
+                        >
+                          <div className="p-2 bg-amber-50 text-amber-500 rounded-xl group-hover:bg-amber-500 group-hover:text-white transition-all">
+                            <CreditCard size={18} />
+                          </div>
+                          <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Assinatura</span>
+                        </button>
+                      )}
                     </div>
 
                     <div className="mt-2 pt-2 border-t border-slate-50">

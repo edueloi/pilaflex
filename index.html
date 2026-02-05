@@ -12,13 +12,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --emerald-500: #10b981; }
-        * { -webkit-tap-highlight-color: transparent; }
+        * { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        
+        /* Custom Scrollbar Premium */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(16, 185, 129, 0.1);
+          border-radius: 10px;
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+          background: rgba(16, 185, 129, 0.3);
+        }
+
         body { 
           font-family: 'Inter', sans-serif; 
           background-color: #f8fafc;
           height: 100%;
           margin: 0;
-          overflow: hidden; /* Trava o scroll no login */
+          overflow: hidden; 
         }
         h1, h2, h3 { font-family: 'Outfit', sans-serif; }
         
@@ -28,7 +45,6 @@
           border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Transição de entrada suave */
         .reveal-app {
           animation: reveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
         }
@@ -37,7 +53,6 @@
           to { transform: translateY(0); }
         }
 
-        /* Melhorias para Notebooks (Altura Curta) */
         @media (max-height: 780px) {
           .login-box { transform: scale(0.9); transform-origin: center; }
           .login-headline { font-size: 2rem !important; }
