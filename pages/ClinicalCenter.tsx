@@ -20,9 +20,16 @@ import {
   Share2,
   ClipboardList,
   Sparkles,
-  // Added missing imports Target and Dumbbell
   Target,
-  Dumbbell
+  Dumbbell,
+  Camera,
+  Grid3X3,
+  ListChecks,
+  History,
+  TrendingUp,
+  FileDown,
+  Info,
+  Maximize2
 } from 'lucide-react';
 
 interface ClinicalRecord {
@@ -32,294 +39,379 @@ interface ClinicalRecord {
   type: string;
   professional: string;
   summary: string;
+  painLevel: number;
 }
 
 const recentRecords: ClinicalRecord[] = [
-  { id: '1', studentName: 'Juliana Paes', date: 'Hoje, 10:30', type: 'Evolução SOAP', professional: 'Dr. Carlos Alberto', summary: 'Hérnia L4-L5, redução de dor EVA 7 -> 4.' },
-  { id: '2', studentName: 'Marcos Frota', date: 'Ontem', type: 'Avaliação Postural', professional: 'Dra. Julia Mendes', summary: 'Escoliose em S, início de fortalecimento core.' },
+  { id: '1', studentName: 'Juliana Paes', date: 'Hoje, 10:30', type: 'Evolução SOAP', professional: 'Dr. Carlos Alberto', summary: 'Hérnia L4-L5, redução de dor EVA 7 -> 4.', painLevel: 4 },
+  { id: '2', studentName: 'Marcos Frota', date: 'Ontem', type: 'Avaliação Postural', professional: 'Dra. Julia Mendes', summary: 'Escoliose em S, início de fortalecimento core.', painLevel: 2 },
 ];
 
 const ClinicalCenter: React.FC = () => {
   const [isEvaluating, setIsEvaluating] = useState(false);
-  const [activeTool, setActiveTool] = useState<'soap' | 'painmap' | 'measurements'>('soap');
+  const [activeTool, setActiveTool] = useState<'soap' | 'posture' | 'tests' | 'measurements'>('soap');
   const [selectedStudent, setSelectedStudent] = useState('');
+  const [showEvolutionHistory, setShowEvolutionHistory] = useState(false);
 
   return (
     <div className="p-4 md:p-8 lg:p-12 space-y-10 animate-in fade-in duration-700 max-w-[1600px] mx-auto pb-40">
       
-      {/* HEADER CLÍNICO */}
+      {/* HEADER CLÍNICO MASTER */}
       <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-emerald-500">
-             <Stethoscope size={18} />
-             <span className="text-[10px] font-black uppercase tracking-[0.4em]">Health Intelligence Hub</span>
+             <div className="p-2 bg-emerald-500/10 rounded-lg">
+                <Stethoscope size={20} />
+             </div>
+             <span className="text-[10px] font-black uppercase tracking-[0.4em]">Advanced Clinical Ecosystem</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter italic uppercase leading-none">Centro <span className="text-emerald-500">Clínico</span></h1>
-          <p className="text-slate-500 font-medium text-lg">Prontuário eletrônico e ferramentas de avaliação para profissionais da saúde.</p>
+          <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter italic uppercase leading-none">Centro <span className="text-emerald-500">Clínico Pro</span></h1>
+          <p className="text-slate-500 font-medium text-lg">Diagnóstico postural, testes funcionais e gestão de prontuários SOAP.</p>
         </div>
         
-        <button 
-          onClick={() => setIsEvaluating(true)}
-          className="flex items-center justify-center gap-4 bg-slate-950 text-white px-10 py-5 rounded-[28px] hover:bg-emerald-600 shadow-2xl transition-all font-black text-xs uppercase tracking-widest active:scale-95 group"
-        >
-          <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-          Nova Avaliação Clínica
-        </button>
+        <div className="flex flex-wrap gap-4">
+           <button 
+             onClick={() => setShowEvolutionHistory(true)}
+             className="flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-900 px-8 py-5 rounded-[28px] hover:border-emerald-500 transition-all font-black text-xs uppercase tracking-widest shadow-sm group"
+           >
+             <History size={18} className="group-hover:rotate-[-20deg] transition-transform" />
+             Histórico de Evolução
+           </button>
+           <button 
+             onClick={() => setIsEvaluating(true)}
+             className="flex items-center justify-center gap-4 bg-slate-950 text-white px-10 py-5 rounded-[28px] hover:bg-emerald-600 shadow-2xl transition-all font-black text-xs uppercase tracking-widest active:scale-95 group"
+           >
+             <Plus size={20} className="group-hover:rotate-90 transition-transform" />
+             Nova Consulta Clínica
+           </button>
+        </div>
       </header>
 
-      {/* QUICK STATS CLÍNICOS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-         {[
-           { label: 'Avaliações no Mês', value: '42', icon: FileText, color: 'blue' },
-           { label: 'Evoluções Ativas', value: '128', icon: Activity, color: 'emerald' },
-           { label: 'Média de Dor (EVA)', value: '3.8', icon: Heart, color: 'rose' },
-           { label: 'Tempo Médio Sessão', value: '55m', icon: Clock, color: 'amber' },
-         ].map((stat, i) => (
-           <div key={i} className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm flex items-center gap-5 group hover:border-emerald-200 transition-all">
-              <div className={`w-14 h-14 rounded-2xl bg-${stat.color}-50 text-${stat.color}-500 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform`}>
-                 <stat.icon size={24} />
-              </div>
-              <div>
-                 <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                 <p className="text-2xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
-              </div>
-           </div>
-         ))}
-      </div>
-
+      {/* PAINEL DE CONTROLE CLÍNICO */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* LADO ESQUERDO: FILA DE ESPERA / ATENDIMENTOS HOJE */}
+        
+        {/* COLUNA ESQUERDA: PACIENTES & INSIGHTS */}
         <div className="xl:col-span-4 space-y-8">
-           <div className="bg-white p-8 rounded-[48px] border border-slate-100 shadow-sm">
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic mb-6">Próximos <span className="text-emerald-500">Pacientes</span></h3>
-              <div className="space-y-4">
+           {/* FILA DE ATENDIMENTO */}
+           <div className="bg-white p-8 rounded-[48px] border border-slate-100 shadow-sm relative overflow-hidden">
+              <div className="flex justify-between items-center mb-8 relative z-10">
+                 <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Pacientes <span className="text-emerald-500">Hoje</span></h3>
+                 <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest">3 Agendados</span>
+              </div>
+              <div className="space-y-3 relative z-10">
                  {[
-                   { name: 'Maria Eduarda', time: '14:00', reason: 'Pós-operatório Joelho', avatar: 'ME' },
-                   { name: 'João Victor', time: '15:15', reason: 'Hérnia Discal L5-S1', avatar: 'JV' },
-                   { name: 'Carla Silveira', time: '16:30', reason: 'Escoliose Juvenil', avatar: 'CS' },
+                   { name: 'Maria Eduarda', time: '14:00', reason: 'Pós-op LCA', status: 'confirmado' },
+                   { name: 'João Victor', time: '15:15', reason: 'Hernia Discal', status: 'em sala' },
+                   { name: 'Carla Silveira', time: '16:30', reason: 'Cervicalgia', status: 'pendente' },
                  ].map((patient, i) => (
-                   <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-3xl border border-slate-100 hover:border-emerald-200 transition-all cursor-pointer group">
+                   <div key={i} className={`flex items-center justify-between p-5 rounded-3xl border transition-all cursor-pointer group ${patient.status === 'em sala' ? 'bg-emerald-500 text-white border-emerald-400 shadow-lg scale-[1.02]' : 'bg-slate-50 border-slate-100 hover:border-emerald-200'}`}>
                       <div className="flex items-center gap-4">
-                         <div className="w-10 h-10 bg-slate-950 text-white rounded-xl flex items-center justify-center font-black text-xs group-hover:bg-emerald-500 transition-colors">
-                            {patient.avatar}
+                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs ${patient.status === 'em sala' ? 'bg-white text-emerald-600' : 'bg-slate-900 text-white'}`}>
+                            {patient.name[0]}
                          </div>
                          <div>
-                            <p className="font-black text-sm text-slate-900 uppercase italic leading-none">{patient.name}</p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase mt-1 tracking-widest">{patient.reason}</p>
+                            <p className="font-black text-sm uppercase italic leading-none">{patient.name}</p>
+                            <p className={`text-[9px] font-bold uppercase mt-1 tracking-widest ${patient.status === 'em sala' ? 'text-emerald-100' : 'text-slate-400'}`}>{patient.reason}</p>
                          </div>
                       </div>
-                      <span className="text-xs font-black text-emerald-500 italic">{patient.time}</span>
+                      <span className={`text-[10px] font-black italic ${patient.status === 'em sala' ? 'text-white' : 'text-emerald-500'}`}>{patient.time}</span>
                    </div>
                  ))}
               </div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl rounded-full -mr-10 -mt-10" />
            </div>
 
-           {/* INSIGHTS CLÍNICOS IA */}
-           <div className="bg-slate-950 p-8 rounded-[48px] text-white relative overflow-hidden shadow-2xl">
+           {/* IA ANALYTICS CLINICAL */}
+           <div className="bg-slate-950 p-8 rounded-[48px] text-white relative overflow-hidden shadow-2xl border border-white/5">
               <div className="relative z-10">
                  <div className="flex items-center gap-3 mb-6">
-                    <Sparkles className="text-emerald-400" size={24} />
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Pila-Health Predictor</span>
+                    <div className="p-2 bg-emerald-500/20 rounded-xl">
+                       <Sparkles className="text-emerald-400" size={24} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Pila-Bot Health Advisor</span>
                  </div>
-                 <p className="text-lg font-medium leading-relaxed italic mb-8">
-                   "A incidência de dores lombares na sua base de alunos subiu 15% após a introdução de novos saltos no Reformer. Recomendamos revisão da técnica de aterrissagem."
+                 <p className="text-xl font-medium leading-relaxed italic mb-8">
+                   "A curva de evolução do paciente <span className="text-emerald-400">João Victor</span> indica estagnação na flexão de tronco. Sugerimos migrar do Reformer para o Cadillac com molas leves para mobilização assistida."
                  </p>
-                 <button className="w-full py-4 bg-white/10 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-500 transition-all">Ver Relatório Epidemiológico</button>
+                 <div className="flex gap-3">
+                    <button className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-500 transition-all border border-white/5">Abrir Bio-Análise</button>
+                    <button className="p-4 bg-white/5 text-emerald-400 rounded-2xl border border-white/5"><Info size={20} /></button>
+                 </div>
               </div>
-              <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 blur-[80px] rounded-full -mr-10 -mt-10" />
            </div>
         </div>
 
-        {/* LADO DIREITO: ÚLTIMAS EVOLUÇÕES / HISTÓRICO */}
-        <div className="xl:col-span-8 bg-white p-10 rounded-[56px] border border-slate-100 shadow-sm flex flex-col">
-           <div className="flex items-center justify-between mb-10">
-              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Últimas <span className="text-emerald-500">Evoluções Clínicas</span></h3>
-              <div className="flex gap-2">
-                 <button className="p-3 bg-slate-50 rounded-xl text-slate-400 hover:text-emerald-500 transition-all"><Search size={20} /></button>
-                 <button className="p-3 bg-slate-50 rounded-xl text-slate-400 hover:text-emerald-500 transition-all"><Share2 size={20} /></button>
+        {/* COLUNA DIREITA: EVOLUÇÕES & GRÁFICOS */}
+        <div className="xl:col-span-8 space-y-8">
+           <div className="bg-white p-10 rounded-[56px] border border-slate-100 shadow-sm">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                 <div>
+                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Monitor de <span className="text-emerald-500">Recuperação</span></h3>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-2">Média de intensidade de dor nos últimos atendimentos</p>
+                 </div>
+                 <div className="flex gap-2">
+                    <button className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:text-emerald-500 transition-all"><FileDown size={20} /></button>
+                    <button className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:text-emerald-500 transition-all"><Share2 size={20} /></button>
+                 </div>
               </div>
-           </div>
 
-           <div className="space-y-6">
-              {recentRecords.map((record) => (
-                <div key={record.id} className="p-8 bg-slate-50 rounded-[40px] border border-slate-100 hover:border-emerald-200 transition-all group cursor-pointer relative overflow-hidden">
-                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                      <div className="flex items-center gap-6">
-                         <div className="w-16 h-16 bg-white border border-slate-200 rounded-[24px] flex items-center justify-center text-emerald-500 shadow-sm group-hover:scale-110 transition-transform">
-                            <ClipboardList size={32} />
+              {/* LISTA DE EVOLUÇÕES COM DASH DE DOR */}
+              <div className="space-y-6">
+                 {recentRecords.map((record) => (
+                   <div key={record.id} className="p-8 bg-slate-50 rounded-[40px] border border-slate-100 hover:border-emerald-200 transition-all group cursor-pointer relative overflow-hidden flex flex-col md:flex-row items-center gap-8">
+                      <div className="flex items-center gap-6 flex-1">
+                         <div className="w-20 h-20 bg-white border border-slate-100 rounded-[28px] flex items-center justify-center text-emerald-500 shadow-sm group-hover:scale-110 transition-transform">
+                            <ClipboardList size={36} />
                          </div>
-                         <div>
-                            <div className="flex items-center gap-3 mb-1">
+                         <div className="space-y-1">
+                            <div className="flex items-center gap-3">
                                <h4 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">{record.studentName}</h4>
-                               <span className="bg-emerald-500 text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest">{record.type}</span>
+                               <span className="bg-slate-900 text-white px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest">{record.type}</span>
                             </div>
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                <User size={12} /> {record.professional} &bull; <Calendar size={12} /> {record.date}
                             </p>
                          </div>
                       </div>
-                      <div className="bg-white p-4 rounded-3xl border border-slate-100 flex-1 md:max-w-xs">
-                         <p className="text-xs font-medium text-slate-600 leading-relaxed italic line-clamp-2">
-                            "{record.summary}"
-                         </p>
+
+                      {/* MINI GRAFICO DOR */}
+                      <div className="flex flex-col items-center gap-2 bg-white px-6 py-4 rounded-3xl border border-slate-100">
+                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Nível EVA</p>
+                         <div className="flex items-center gap-1">
+                            {[1,2,3,4,5,6,7,8,9,10].map(i => (
+                              <div key={i} className={`w-1.5 h-6 rounded-full ${i <= record.painLevel ? (record.painLevel > 7 ? 'bg-rose-500' : 'bg-emerald-500') : 'bg-slate-100'}`} />
+                            ))}
+                         </div>
+                         <p className="text-sm font-black text-slate-900">{record.painLevel}/10</p>
                       </div>
-                      <ChevronRight className="text-slate-300 group-hover:text-emerald-500 transition-all" />
+
+                      <ChevronRight className="text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-2 transition-all" />
                    </div>
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[40px] rounded-full -mr-10 -mt-10" />
-                </div>
-              ))}
+                 ))}
+              </div>
            </div>
         </div>
       </div>
 
-      {/* MODAL DE AVALIAÇÃO CLÍNICA MULTI-TOOL */}
+      {/* MODAL DE AVALIAÇÃO MULTI-TAB (O CORAÇÃO DO CENTRO CLÍNICO) */}
       {isEvaluating && (
-        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-[300] flex items-center justify-center p-4">
-           <div className="bg-white w-full max-w-4xl rounded-[60px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 border border-white/20 flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-3xl z-[300] flex items-center justify-center p-4">
+           <div className="bg-white w-full max-w-5xl rounded-[64px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 border border-white/10 flex flex-col max-h-[95vh]">
+              
+              {/* Header Modal */}
               <div className="p-10 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                 <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-slate-950 text-white rounded-[24px] flex items-center justify-center shadow-lg transform -rotate-3">
-                       <Stethoscope size={32} />
+                 <div className="flex items-center gap-6">
+                    <div className="w-20 h-20 bg-slate-950 text-white rounded-[32px] flex items-center justify-center shadow-2xl transform -rotate-6">
+                       <Stethoscope size={40} />
                     </div>
                     <div>
-                       <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Avaliação <span className="text-emerald-500">Multiclínica</span></h2>
-                       <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Instrumental científico PilaFlex</p>
+                       <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Consulta <span className="text-emerald-500">Clínica Digital</span></h2>
+                       <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-emerald-500" /> Protocolo Validado Cientificamente
+                       </p>
                     </div>
                  </div>
-                 <button onClick={() => setIsEvaluating(false)} className="w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm">
-                   <X size={24} />
+                 <button onClick={() => setIsEvaluating(false)} className="w-14 h-14 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm">
+                   <X size={28} />
                  </button>
               </div>
 
-              {/* TABS DE FERRAMENTAS */}
-              <div className="px-10 pt-6 flex gap-8 border-b border-slate-50">
+              {/* TABS NAVEGAÇÃO CLÍNICA */}
+              <div className="px-10 pt-8 flex gap-10 border-b border-slate-50 bg-white">
                  {[
                    { id: 'soap', label: 'Evolução SOAP', icon: FileText },
-                   { id: 'painmap', label: 'Mapa de Dor', icon: Heart },
-                   { id: 'measurements', label: 'Bio & Perimetria', icon: Scale },
+                   { id: 'posture', label: 'Grelha Postural', icon: Grid3X3 },
+                   { id: 'tests', label: 'Testes & Sinais', icon: ListChecks },
+                   { id: 'measurements', label: 'Bio & Goniometria', icon: Scale },
                  ].map(tool => (
                    <button 
                     key={tool.id}
                     onClick={() => setActiveTool(tool.id as any)}
-                    className={`pb-5 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all relative ${activeTool === tool.id ? 'text-emerald-600' : 'text-slate-300'}`}
+                    className={`pb-6 flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest transition-all relative ${activeTool === tool.id ? 'text-emerald-600' : 'text-slate-300 hover:text-slate-500'}`}
                    >
-                     <tool.icon size={14} /> {tool.label}
-                     {activeTool === tool.id && <div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 rounded-t-full shadow-[0_-4px_10px_rgba(16,185,129,0.5)]" />}
+                     <tool.icon size={16} /> {tool.label}
+                     {activeTool === tool.id && <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-emerald-500 rounded-t-full shadow-[0_-4px_10px_rgba(16,185,129,0.5)]" />}
                    </button>
                  ))}
               </div>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-10 space-y-10">
-                 {/* TOOL: SOAP NOTES */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-12 space-y-12">
+                 
+                 {/* TOOL: SOAP NOTES (MELHORADO) */}
                  {activeTool === 'soap' && (
-                   <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
-                      <div className="grid grid-cols-2 gap-8">
-                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Paciente / Aluno</label>
-                            <select className="w-full p-5 bg-slate-50 border border-slate-100 rounded-3xl font-black text-xs outline-none focus:bg-white focus:border-emerald-500" value={selectedStudent} onChange={e => setSelectedStudent(e.target.value)}>
-                               <option>Selecione o paciente...</option>
-                               <option>Juliana Paes</option>
-                               <option>Marcos Frota</option>
-                            </select>
+                   <div className="space-y-10 animate-in slide-in-from-right-4 duration-500">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Paciente Selecionado</label>
+                            <div className="relative group">
+                               <User className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-emerald-500" size={20} />
+                               <select className="w-full pl-16 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-[28px] font-black text-sm outline-none focus:bg-white focus:border-emerald-500 transition-all appearance-none" value={selectedStudent} onChange={e => setSelectedStudent(e.target.value)}>
+                                  <option>Selecione o prontuário...</option>
+                                  <option>Juliana Paes</option>
+                                  <option>Marcos Frota</option>
+                                  <option>João Victor</option>
+                               </select>
+                            </div>
                          </div>
-                         <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Data/Hora Atendimento</label>
-                            <input type="datetime-local" className="w-full p-5 bg-slate-50 border border-slate-100 rounded-3xl font-black text-xs outline-none" />
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Intensidade da Dor (EVA)</label>
+                            <div className="flex items-center gap-6 bg-slate-50 p-6 rounded-[28px] border border-slate-100">
+                               <input type="range" min="0" max="10" className="flex-1 h-3 bg-slate-200 rounded-full appearance-none cursor-pointer accent-emerald-500" />
+                               <span className="text-2xl font-black text-slate-900 italic">0/10</span>
+                            </div>
                          </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1">(S) Subjective / Relato</label>
-                            <textarea placeholder="O que o paciente relatou sobre sua dor ou estado?" className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[32px] text-xs font-medium focus:bg-white resize-none h-32" />
-                         </div>
-                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-blue-600 uppercase tracking-widest ml-1">(O) Objective / Exame Físico</label>
-                            <textarea placeholder="Sinais vitais, testes físicos, inspeção..." className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[32px] text-xs font-medium focus:bg-white resize-none h-32" />
-                         </div>
-                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-amber-600 uppercase tracking-widest ml-1">(A) Assessment / Avaliação</label>
-                            <textarea placeholder="Diagnóstico cinético-funcional..." className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[32px] text-xs font-medium focus:bg-white resize-none h-32" />
-                         </div>
-                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-rose-600 uppercase tracking-widest ml-1">(P) Plan / Conduta</label>
-                            <textarea placeholder="Exercícios realizados e orientações para casa..." className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[32px] text-xs font-medium focus:bg-white resize-none h-32" />
-                         </div>
-                      </div>
-                   </div>
-                 )}
-
-                 {/* TOOL: PAIN MAP (VISUAL) */}
-                 {activeTool === 'painmap' && (
-                   <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
-                      <div className="flex flex-col md:flex-row items-center gap-10">
-                         <div className="bg-slate-50 p-10 rounded-[60px] border border-slate-100 flex items-center justify-center relative group">
-                            <div className="w-64 h-96 border-4 border-emerald-500/20 rounded-[40px] flex items-center justify-center text-slate-300 italic font-black text-center p-8">
-                               Diagrama do Corpo <br /> (Anterior / Posterior)
-                               <div className="absolute top-1/4 left-1/2 w-4 h-4 bg-rose-500 rounded-full animate-ping" />
-                               <div className="absolute top-1/4 left-1/2 w-4 h-4 bg-rose-500 rounded-full shadow-lg" />
-                            </div>
-                         </div>
-                         <div className="flex-1 space-y-6">
-                            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                               <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Escala de Dor (EVA)</h4>
-                               <input type="range" min="0" max="10" className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-rose-500" />
-                               <div className="flex justify-between mt-2 font-black text-xs text-slate-400 italic uppercase">
-                                  <span>Sem Dor</span>
-                                  <span className="text-rose-500">Insuportável</span>
-                               </div>
-                            </div>
-                            <div className="space-y-2">
-                               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Descrição da Sensação</label>
-                               <div className="flex flex-wrap gap-2">
-                                  {['Aguda', 'Queimação', 'Latejante', 'Fisgada', 'Cãibra'].map(s => (
-                                    <button key={s} className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-[10px] font-black uppercase hover:bg-rose-500 hover:text-white transition-all">{s}</button>
-                                  ))}
-                               </div>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                 )}
-
-                 {/* TOOL: MEASUREMENTS */}
-                 {activeTool === 'measurements' && (
-                   <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                          {[
-                           { label: 'Tórax (cm)', icon: Activity },
-                           { label: 'Cintura (cm)', icon: Target },
-                           { label: 'Abdômen (cm)', icon: Activity },
-                           { label: 'Braço Dir (cm)', icon: Zap },
-                           { label: 'Braço Esq (cm)', icon: Zap },
-                           { label: 'Coxa Dir (cm)', icon: Dumbbell },
-                           { label: 'Coxa Esq (cm)', icon: Dumbbell },
-                         ].map((m, i) => (
-                           <div key={i} className="space-y-2">
-                              <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">{m.label}</label>
-                              <div className="relative">
-                                 <input type="number" step="0.1" className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl font-black text-sm outline-none focus:bg-white" placeholder="0.0" />
+                           { key: 'S', label: 'Subjective (Relato)', color: 'emerald', placeholder: 'Dores, sensações, sono, humor...' },
+                           { key: 'O', label: 'Objective (Exame)', color: 'blue', placeholder: 'Sinais vitais, inspeção, palpação...' },
+                           { key: 'A', label: 'Assessment (Análise)', color: 'amber', placeholder: 'Diagnóstico funcional, hipóteses...' },
+                           { key: 'P', label: 'Plan (Conduta)', color: 'rose', placeholder: 'Exercícios, recomendações, frequência...' },
+                         ].map(item => (
+                           <div key={item.key} className="space-y-3">
+                              <div className="flex items-center gap-2">
+                                 <div className={`w-7 h-7 bg-${item.color}-500 text-white rounded-lg flex items-center justify-center font-black text-xs`}>{item.key}</div>
+                                 <label className={`text-[10px] font-black text-${item.color}-600 uppercase tracking-widest`}>{item.label}</label>
                               </div>
+                              <textarea placeholder={item.placeholder} className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[32px] text-sm font-medium focus:bg-white focus:border-emerald-500 transition-all resize-none h-44 shadow-inner" />
                            </div>
                          ))}
                       </div>
                    </div>
                  )}
+
+                 {/* TOOL: POSTURAL GRID (GRELHA) */}
+                 {activeTool === 'posture' && (
+                   <div className="space-y-10 animate-in slide-in-from-right-4 duration-500">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                         {['Frente', 'Costas', 'Perfil'].map(side => (
+                           <div key={side} className="space-y-4">
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">{side}</p>
+                              <div className="aspect-[3/4] bg-slate-50 rounded-[48px] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 hover:border-emerald-500 hover:bg-emerald-50 transition-all cursor-pointer group relative overflow-hidden">
+                                 <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                                 <Camera size={48} className="mb-4 group-hover:scale-110 transition-transform" />
+                                 <span className="font-black text-[10px] uppercase tracking-widest">Upload Foto</span>
+                                 <div className="absolute top-4 right-4">
+                                    <Maximize2 size={18} className="text-slate-300" />
+                                 </div>
+                              </div>
+                           </div>
+                         ))}
+                      </div>
+                      <div className="bg-emerald-50 p-8 rounded-[40px] border border-emerald-100 flex items-center gap-6">
+                         <div className="w-14 h-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-lg"><Grid3X3 size={28} /></div>
+                         <div className="flex-1">
+                            <h4 className="text-emerald-900 font-black text-sm uppercase italic tracking-tight">Grelha Postural Inteligente</h4>
+                            <p className="text-emerald-800/60 text-xs font-medium">As fotos enviadas receberão automaticamente o Grid de simetria PilaFlex para análise de desvios angulares.</p>
+                         </div>
+                      </div>
+                   </div>
+                 )}
+
+                 {/* TOOL: TESTES ORTOPÉDICOS */}
+                 {activeTool === 'tests' && (
+                   <div className="space-y-10 animate-in slide-in-from-right-4 duration-500">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                         <div className="space-y-6">
+                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">Testes de <span className="text-emerald-500">Coluna & Quadril</span></h3>
+                            <div className="space-y-3">
+                               {['Teste de Lasègue', 'Teste de Slump', 'Trendelenburg', 'Teste de Thomas', 'Adams (Escoliose)'].map(test => (
+                                 <div key={test} className="flex items-center justify-between p-5 bg-slate-50 border border-slate-100 rounded-3xl group hover:border-emerald-200 transition-all">
+                                    <span className="font-bold text-sm text-slate-700">{test}</span>
+                                    <div className="flex bg-white p-1 rounded-xl border border-slate-200">
+                                       <button type="button" className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-emerald-500 hover:text-white transition-all">Neg</button>
+                                       <button type="button" className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-rose-500 hover:text-white transition-all">Pos</button>
+                                    </div>
+                                 </div>
+                               ))}
+                            </div>
+                         </div>
+                         <div className="space-y-6">
+                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">Membros <span className="text-emerald-500">Superiores</span></h3>
+                            <div className="space-y-3">
+                               {['Teste de Phalen', 'Teste de Jobe', 'Teste de Speed', 'Apprehension Test', 'Neer Test'].map(test => (
+                                 <div key={test} className="flex items-center justify-between p-5 bg-slate-50 border border-slate-100 rounded-3xl group hover:border-emerald-200 transition-all">
+                                    <span className="font-bold text-sm text-slate-700">{test}</span>
+                                    <div className="flex bg-white p-1 rounded-xl border border-slate-200">
+                                       <button type="button" className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-emerald-500 hover:text-white transition-all">Neg</button>
+                                       <button type="button" className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-rose-500 hover:text-white transition-all">Pos</button>
+                                    </div>
+                                 </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                 )}
+
+                 {/* TOOL: MEASUREMENTS & GONIOMETRY */}
+                 {activeTool === 'measurements' && (
+                   <div className="space-y-10 animate-in slide-in-from-right-4 duration-500">
+                      <div className="bg-slate-900 p-10 rounded-[48px] text-white">
+                         <div className="flex items-center gap-4 mb-10">
+                            <div className="p-3 bg-emerald-500 rounded-2xl shadow-xl shadow-emerald-500/20"><TrendingUp size={28} /></div>
+                            <h3 className="text-2xl font-black uppercase italic tracking-tighter">Amplitude de Movimento (ADM)</h3>
+                         </div>
+                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {[
+                               { label: 'Flexão de Ombro', icon: Zap },
+                               { label: 'Flexão de Quadril', icon: Zap },
+                               { label: 'Extensão de Joelho', icon: Zap },
+                               { label: 'Abdução de Ombro', icon: Zap },
+                               { label: 'Rotação Cervical', icon: Zap },
+                               { label: 'Dorsiflexão Tornozelo', icon: Zap },
+                            ].map((m, i) => (
+                              <div key={i} className="space-y-2">
+                                 <label className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">{m.label}</label>
+                                 <div className="relative">
+                                    <input type="number" className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl font-black text-2xl outline-none focus:border-emerald-500 text-white" placeholder="0°" />
+                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 font-black text-xs uppercase">Graus</span>
+                                 </div>
+                              </div>
+                            ))}
+                         </div>
+                      </div>
+                   </div>
+                 )}
               </div>
 
-              <div className="p-10 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-4">
-                 <div className="flex-1 flex items-center gap-4 text-emerald-600">
-                    <CheckCircle2 size={24} />
-                    <p className="text-[10px] font-black uppercase tracking-widest leading-tight">Este registro será criptografado e anexado ao prontuário histórico do paciente para auditoria clínica.</p>
+              {/* Footer Modal Finalização */}
+              <div className="p-10 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+                 <div className="flex items-center gap-5">
+                    <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-emerald-500"><CheckCircle2 size={32} /></div>
+                    <div>
+                       <p className="text-xs font-black text-slate-900 uppercase italic tracking-tighter">Assinatura Digital Clínica</p>
+                       <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Sincronizado com Prontuário PilaFlex-ID</p>
+                    </div>
                  </div>
-                 <button onClick={() => setIsEvaluating(false)} className="w-full sm:w-auto px-12 py-6 bg-slate-950 text-white rounded-[28px] font-black uppercase text-xs tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-3 active:scale-95">
-                    <Save size={18} /> Finalizar & Sincronizar
-                 </button>
+                 <div className="flex gap-4 w-full sm:w-auto">
+                    <button onClick={() => setIsEvaluating(false)} className="px-10 py-5 bg-white border-2 border-slate-200 text-slate-500 rounded-[28px] font-black uppercase text-xs tracking-widest hover:border-emerald-500 transition-all">Descartar</button>
+                    <button onClick={() => setIsEvaluating(false)} className="flex-1 sm:flex-none px-14 py-5 bg-slate-950 text-white rounded-[28px] font-black uppercase text-xs tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-3">
+                       <Save size={18} /> Finalizar & Sincronizar
+                    </button>
+                 </div>
               </div>
            </div>
         </div>
       )}
 
+      {/* FOOTER CLÍNICO */}
+      <footer className="bg-emerald-500 p-12 md:p-16 rounded-[60px] text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 group">
+         <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-6">
+               <div className="p-2 bg-white/20 rounded-xl backdrop-blur-md"><Activity size={24} /></div>
+               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/70">Scientific Management</span>
+            </div>
+            <h3 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none mb-6">Pronto para <br /> o Próximo <span className="text-slate-900">Nível?</span></h3>
+            <p className="text-white/80 font-medium max-w-lg text-lg leading-relaxed">Utilize o PilaFlex Pro para transformar dados brutos em saúde real. Gere relatórios de alto impacto e fidelize seus pacientes pelo resultado clínico.</p>
+         </div>
+         <button className="relative z-10 px-14 py-7 bg-slate-950 text-white rounded-[32px] font-black uppercase text-[12px] tracking-[0.3em] shadow-2xl hover:scale-105 transition-all active:scale-95 flex items-center gap-4 group/btn">
+            <FileDown size={22} className="group-hover/btn:translate-y-1 transition-transform" /> Central de Relatórios
+         </button>
+         <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-white/10 blur-[120px] rounded-full group-hover:scale-110 transition-transform duration-1000" />
+         <div className="absolute top-0 left-0 w-64 h-64 bg-slate-900/5 blur-[80px] rounded-full" />
+      </footer>
     </div>
   );
 };
