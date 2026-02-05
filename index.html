@@ -3,7 +3,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>PilaFlex - Gestão de Pilates & Bem-Estar</title>
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23064e3b%22/><circle cx=%2250%22 cy=%2250%22 r=%2220%22 fill=%22%2310b981%22/></svg>">
@@ -14,40 +14,27 @@
         :root { --emerald-500: #10b981; }
         * { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
         
-        /* Custom Scrollbar Premium - VISIBILIDADE MÁXIMA */
+        /* Custom Scrollbar Premium */
         .custom-scrollbar::-webkit-scrollbar {
-          width: 10px; /* Mais larga para ser vista */
-          height: 10px;
+          width: 6px;
+          height: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 20px;
-          margin: 4px;
+          background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #10b981; /* Esmeralda sólido */
-          border-radius: 20px;
-          border: 3px solid transparent;
-          background-clip: content-box;
-          box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+          background: #e2e8f0;
+          border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #34d399; /* Mais claro no hover */
-          border: 2px solid transparent;
-          background-clip: content-box;
-        }
-
-        /* Sidebar específica para contraste total */
-        aside.custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.02);
+          background: #10b981;
         }
 
         body { 
           font-family: 'Inter', sans-serif; 
           background-color: #f8fafc;
-          height: 100%;
           margin: 0;
-          overflow: hidden; 
+          min-height: 100vh;
         }
         h1, h2, h3 { font-family: 'Outfit', sans-serif; }
         
@@ -57,17 +44,17 @@
           border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .reveal-app {
-          animation: reveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-        }
-        @keyframes reveal {
-          from { transform: translateY(100%); }
-          to { transform: translateY(0); }
+        @keyframes loading {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(250%); }
         }
 
-        @media (max-height: 780px) {
-          .login-box { transform: scale(0.9); transform-origin: center; }
-          .login-headline { font-size: 2rem !important; }
+        .reveal-app {
+          animation: reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes reveal {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
     </style>
 <script type="importmap">
@@ -84,7 +71,7 @@
 </script>
 </head>
 <body class="bg-slate-50 text-slate-900">
-    <div id="root" class="h-full"></div>
+    <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 </body>
 </html>

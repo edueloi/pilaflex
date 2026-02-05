@@ -86,28 +86,28 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
       )}
 
       <aside className={`
-        fixed left-0 top-0 h-screen bg-slate-950 text-white flex flex-col z-[70] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
+        fixed left-0 top-0 h-full bg-slate-950 text-white flex flex-col z-[70] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
         border-r border-white/5 shadow-[20px_0_50px_rgba(0,0,0,0.3)]
-        ${isOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0 lg:w-72'}
+        ${isOpen ? 'translate-x-0 w-72 sm:w-80' : '-translate-x-full lg:translate-x-0 lg:w-72'}
       `}>
         {/* Logo Section */}
-        <div className="p-8 pb-4 flex items-center justify-between shrink-0">
+        <div className="p-6 md:p-8 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => handleNavClick(role === UserRole.STUDENT ? 'student-dashboard' : 'dashboard')}>
             <div className="bg-emerald-500 p-2.5 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:rotate-12 transition-transform duration-300">
               <Award className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-black tracking-tighter uppercase italic text-white leading-none">PilaFlex</h1>
+              <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-white leading-none">PilaFlex</h1>
               <span className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.4em] leading-none">Business v2.0</span>
             </div>
           </div>
-          <button onClick={() => setIsOpen(false)} className="lg:hidden text-slate-500 hover:text-white transition-colors">
-            <X size={20} />
+          <button onClick={() => setIsOpen(false)} className="lg:hidden p-2 text-slate-500 hover:text-white transition-colors">
+            <X size={24} />
           </button>
         </div>
 
-        {/* Navigation Content - Improved Scroll */}
-        <nav className="flex-1 mt-6 px-4 space-y-8 overflow-y-auto custom-scrollbar pb-10">
+        {/* Navigation Content - Improved Scroll and safe areas */}
+        <nav className="flex-1 px-4 space-y-8 overflow-y-auto custom-scrollbar pb-10">
           {sections.map((section, idx) => {
             if (!section.roles.includes(role)) return null;
             return (
@@ -150,25 +150,25 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
           })}
         </nav>
 
-        {/* User Profile Area - Sticky Bottom */}
+        {/* User Profile Area - Sticky Bottom with safe spacing */}
         <div className="p-6 border-t border-white/5 bg-slate-900/30 shrink-0">
           <div 
             className="flex items-center gap-4 mb-6 px-2 cursor-pointer group"
             onClick={() => handleNavClick('profile')}
           >
             <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center font-black text-white shadow-xl group-hover:rotate-6 transition-all">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center font-black text-white shadow-xl group-hover:rotate-6 transition-all">
                 {role === UserRole.STUDENT ? 'A' : 'C'}
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full" />
+              <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full" />
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="text-sm font-black text-white truncate leading-none mb-1.5 uppercase italic tracking-tighter group-hover:text-emerald-400">
+              <p className="text-xs md:text-sm font-black text-white truncate leading-none mb-1.5 uppercase italic tracking-tighter group-hover:text-emerald-400">
                 {role === UserRole.STUDENT ? 'Aluno Demo' : 'Carlos Alberto'}
               </p>
               <div className="flex items-center gap-1.5">
                 <Target size={10} className="text-emerald-500" />
-                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest truncate">
+                <span className="text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest truncate">
                   {role === UserRole.STUDENT ? 'Pila-Membro' : 'Proprietário Master'}
                 </span>
               </div>
@@ -176,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
           </div>
           <button 
             onClick={onLogout}
-            className="w-full flex items-center justify-center gap-3 py-4 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-2xl transition-all font-black text-[10px] uppercase tracking-[0.2em] border border-transparent hover:border-rose-500/20"
+            className="w-full flex items-center justify-center gap-3 py-4 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-2xl transition-all font-black text-[9px] md:text-[10px] uppercase tracking-[0.2em] border border-transparent hover:border-rose-500/20"
           >
             <LogOut size={16} />
             <span>Encerrar Sessão</span>

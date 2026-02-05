@@ -33,7 +33,7 @@ const data = [
 
 const Dashboard: React.FC = () => {
   return (
-    <div className="p-4 md:p-8 xl:p-12 space-y-8 md:space-y-12 animate-in fade-in duration-700 max-w-[1600px] mx-auto">
+    <div className="p-4 sm:p-6 md:p-8 xl:p-12 space-y-8 md:space-y-12 animate-in fade-in duration-700 max-w-[1600px] mx-auto overflow-x-hidden">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -41,9 +41,9 @@ const Dashboard: React.FC = () => {
             <span className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.3em]">Ambiente Ativo</span>
           </div>
           <h1 className="text-3xl md:text-4xl xl:text-5xl font-black text-slate-950 tracking-tighter italic uppercase leading-none">Bem-vindo, Carlos!</h1>
-          <p className="text-slate-500 font-medium text-base">Sua clínica está operando com <span className="text-emerald-500 font-bold">94% de eficiência</span> hoje.</p>
+          <p className="text-slate-500 font-medium text-sm md:text-base">Sua clínica está operando com <span className="text-emerald-500 font-bold">94% de eficiência</span> hoje.</p>
         </div>
-        <div className="hidden lg:flex items-center gap-4 bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="flex items-center gap-4 bg-white p-3 md:p-4 rounded-3xl border border-slate-100 shadow-sm self-start md:self-auto">
            <div className="text-right">
               <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Data do Sistema</p>
               <p className="text-xs font-black text-slate-800 uppercase italic">12 Dez, 2024</p>
@@ -54,7 +54,7 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Responsivo de 1 a 4 colunas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {[
           { label: 'Alunos Totais', value: '124', icon: Users, color: 'text-blue-500', bg: 'bg-blue-50', trend: '+5%', up: true },
@@ -80,8 +80,8 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-        {/* Gráfico */}
-        <div className="lg:col-span-7 xl:col-span-8 bg-white p-6 md:p-8 rounded-[40px] shadow-sm border border-slate-100">
+        {/* Gráfico principal que se adapta */}
+        <div className="lg:col-span-7 xl:col-span-8 bg-white p-6 md:p-8 rounded-[40px] shadow-sm border border-slate-100 min-h-[400px]">
           <div className="flex justify-between items-center mb-10">
              <div>
                 <h3 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter italic">Fluxo Semanal</h3>
@@ -91,7 +91,7 @@ const Dashboard: React.FC = () => {
                 <TrendingUp size={20} />
              </div>
           </div>
-          <div className="h-[280px] md:h-[350px]">
+          <div className="h-[250px] sm:h-[300px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
@@ -110,8 +110,8 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Check-ins */}
-        <div className="lg:col-span-5 xl:col-span-4 bg-white p-6 md:p-8 rounded-[40px] shadow-sm border border-slate-100 flex flex-col h-full">
+        {/* Check-ins lateral que desce em mobile */}
+        <div className="lg:col-span-5 xl:col-span-4 bg-white p-6 md:p-8 rounded-[40px] shadow-sm border border-slate-100 flex flex-col h-full min-h-[400px]">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-tighter italic">Check-ins</h3>
             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded">Hoje</span>
@@ -145,28 +145,28 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Insight Bar */}
-      <div className="bg-slate-950 rounded-[40px] p-8 md:p-10 text-white relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-10">
-         <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-2 mb-4">
+      {/* Insight Bar - Ajustado para empilhar em mobile */}
+      <div className="bg-slate-950 rounded-[40px] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-10">
+         <div className="relative z-10 flex-1 text-center lg:text-left">
+            <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
                <Zap className="text-emerald-400" size={20} />
                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">Insight Estratégico</span>
             </div>
             <h2 className="text-2xl md:text-3xl xl:text-4xl font-black tracking-tighter uppercase italic leading-[1.1] mb-4">
                Sua retenção subiu <span className="text-emerald-400">12%</span> este mês.
             </h2>
-            <p className="text-white/40 text-sm md:text-base font-medium leading-relaxed max-w-xl">
-               Alunos de Reformer Avançado renovam 3x mais. Considere abrir horários premium.
+            <p className="text-white/40 text-sm md:text-base font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
+               Alunos de Reformer Avançado renovam 3x mais. Considere abrir horários premium no período matutino para maximizar o LTV.
             </p>
          </div>
-         <div className="relative z-10 grid grid-cols-2 gap-4">
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-5 rounded-3xl text-center w-32 md:w-40">
+         <div className="relative z-10 grid grid-cols-2 gap-4 w-full lg:w-auto">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[32px] text-center flex-1">
                <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-1">Churn</p>
                <p className="text-2xl font-black text-emerald-400">2.4%</p>
             </div>
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-5 rounded-3xl text-center w-32 md:w-40">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[32px] text-center flex-1">
                <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-1">LTV</p>
-               <p className="text-2xl font-black text-emerald-400">R$ 2k</p>
+               <p className="text-2xl font-black text-emerald-400">R$ 2.1k</p>
             </div>
          </div>
          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full"></div>
