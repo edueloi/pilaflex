@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { UserRole } from './types';
 import Sidebar from './components/Sidebar';
 import Login from './pages/Login';
@@ -13,6 +13,7 @@ import StaffManagement from './pages/StaffManagement';
 import Agenda from './pages/Agenda';
 import TasksKanban from './pages/TasksKanban';
 import MyTraining from './pages/MyTraining';
+import TrainingCenter from './pages/TrainingCenter';
 import { 
   Bell, 
   User as UserIcon, 
@@ -20,9 +21,13 @@ import {
   Search, 
   Award, 
   Command, 
-  AlertTriangle, 
   ArrowLeft,
-  SearchX
+  SearchX,
+  Settings,
+  UserCircle,
+  CreditCard,
+  LogOut,
+  ChevronDown
 } from 'lucide-react';
 
 const Page404: React.FC<{ onReset: () => void }> = ({ onReset }) => (
@@ -54,6 +59,8 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hideLayout, setHideLayout] = useState(false); 
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -62,12 +69,23 @@ const App: React.FC = () => {
       } else {
         setActiveTab('dashboard');
       }
-      const timer = setTimeout(() => setIsLoaded(true), 100);
+      const timer = setTimeout(() => setIsLoaded(true), 200);
       return () => clearTimeout(timer);
     } else {
       setIsLoaded(false);
     }
   }, [isAuthenticated, userRole]);
+
+  // Fechar menu ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogin = (role: UserRole) => {
     setUserRole(role);
@@ -78,6 +96,7 @@ const App: React.FC = () => {
     setIsAuthenticated(false);
     setIsSidebarOpen(false);
     setHideLayout(false);
+    setIsUserMenuOpen(false);
   };
 
   const resetToHome = () => {
@@ -97,6 +116,7 @@ const App: React.FC = () => {
       case 'manage-courses': return <ManageCourses />;
       case 'staff': return <StaffManagement />;
       case 'tasks': return <TasksKanban />;
+      case 'training-center': return <TrainingCenter />;
       case 'student-dashboard': return <StudentDashboard />;
       case 'my-training': return <MyTraining />;
       case 'courses': return <Courses onViewingCourse={setHideLayout} />;
@@ -134,7 +154,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-slate-50 flex transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`min-h-screen bg-slate-50 flex transition-all duration-1000 ${isLoaded ? 'opacity-100 reveal-app' : 'opacity-0'}`}>
       {!hideLayout && (
         <Sidebar 
           role={userRole} 
@@ -146,7 +166,7 @@ const App: React.FC = () => {
         />
       )}
       
-      <main className={`flex-1 flex flex-col transition-all duration-500 ${!hideLayout ? 'lg:pl-72' : ''}`}>
+      <main className={`flex-1 flex flex-col transition-all duration-500 ${!hideLayout ? 'lg:pl-72' : ''} h-screen overflow-hidden`}>
         {!hideLayout && (
           <header className="h-24 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 md:px-10 flex items-center justify-between sticky top-0 z-40 shrink-0">
             <div className="flex items-center gap-4">
@@ -172,29 +192,80 @@ const App: React.FC = () => {
                 <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse"></span>
               </button>
 
-              <div className="flex items-center gap-4 pl-4 md:pl-8 border-l border-slate-100">
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-black text-slate-900 leading-none tracking-tight uppercase italic">
-                    {userRole === UserRole.PROFESSIONAL ? 'Carlos Alberto' : 'Aluno Demo'}
-                  </p>
-                  <p className="text-[9px] uppercase font-black text-emerald-600 tracking-widest mt-1.5">
-                    {userRole} Member
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-slate-900 text-white rounded-[18px] flex items-center justify-center shadow-xl shadow-slate-900/20 transform hover:rotate-6 transition-all cursor-pointer">
-                  <UserIcon size={22} />
-                </div>
+              {/* USER PROFILE & DROPDOWN */}
+              <div className="relative" ref={userMenuRef}>
+                <button 
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-4 pl-4 md:pl-8 border-l border-slate-100 group transition-all"
+                >
+                  <div className="text-right hidden sm:block">
+                    <p className="text-sm font-black text-slate-900 leading-none tracking-tight uppercase italic group-hover:text-emerald-600 transition-colors">
+                      {userRole === UserRole.PROFESSIONAL ? 'Carlos Alberto' : 'Aluno Demo'}
+                    </p>
+                    <p className="text-[9px] uppercase font-black text-emerald-600 tracking-widest mt-1.5 flex items-center justify-end gap-1">
+                      {userRole} Member <ChevronDown size={10} className={`transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-slate-900 text-white rounded-[18px] flex items-center justify-center shadow-xl shadow-slate-900/20 transform group-hover:rotate-6 transition-all ring-2 ring-transparent group-hover:ring-emerald-500/20">
+                    <UserIcon size={22} />
+                  </div>
+                </button>
+
+                {/* DROPDOWN MENU */}
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-4 w-64 bg-white rounded-[32px] shadow-2xl border border-slate-100 p-2 z-[100] animate-in fade-in zoom-in-95 duration-200">
+                    <div className="p-4 border-b border-slate-50 mb-2">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Logado como</p>
+                      <p className="text-sm font-black text-slate-900 truncate">{userRole === UserRole.PROFESSIONAL ? 'carlos@pilaflex.com' : 'aluno@demo.com'}</p>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
+                        <div className="p-2 bg-blue-50 text-blue-500 rounded-xl group-hover:bg-blue-500 group-hover:text-white transition-all">
+                          <UserCircle size={18} />
+                        </div>
+                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Meu Perfil</span>
+                      </button>
+
+                      <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
+                        <div className="p-2 bg-emerald-50 text-emerald-500 rounded-xl group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                          <Settings size={18} />
+                        </div>
+                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Configurações</span>
+                      </button>
+
+                      <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 transition-all group">
+                        <div className="p-2 bg-amber-50 text-amber-500 rounded-xl group-hover:bg-amber-500 group-hover:text-white transition-all">
+                          <CreditCard size={18} />
+                        </div>
+                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">Assinatura</span>
+                      </button>
+                    </div>
+
+                    <div className="mt-2 pt-2 border-t border-slate-50">
+                      <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl hover:bg-rose-50 text-rose-500 transition-all group"
+                      >
+                        <div className="p-2 bg-rose-50 text-rose-500 rounded-xl group-hover:bg-rose-500 group-hover:text-white transition-all">
+                          <LogOut size={18} />
+                        </div>
+                        <span className="text-xs font-black uppercase tracking-widest">Encerrar Sessão</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </header>
         )}
 
-        {/* Scroll habilitado aqui para o conteúdo do sistema */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
+        {/* Scroll interno da área de conteúdo */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 pb-10">
           {renderContent()}
           
           {!hideLayout && (
-            <footer className="p-8 text-center bg-white border-t border-slate-100 mt-auto">
+            <footer className="p-8 text-center bg-white border-t border-slate-100 mt-10">
               <p className="text-slate-300 text-[10px] font-black uppercase tracking-[0.4em] italic">
                 PilaFlex Global Standards &bull; Cloud Optimized &bull; 2024
               </p>

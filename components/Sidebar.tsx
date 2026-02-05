@@ -17,7 +17,8 @@ import {
   GraduationCap,
   ChevronRight,
   ShieldCheck,
-  Target
+  Target,
+  Zap
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -38,6 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'agenda', label: 'Agenda Global', icon: Calendar },
+        { id: 'training-center', label: 'Centro de Treino', icon: Dumbbell },
         { id: 'tasks', label: 'Projetos Kanban', icon: CheckSquare },
       ]
     },
@@ -156,7 +158,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
                <div className="relative z-10">
                   <ShieldCheck className="text-emerald-500 mb-3" size={24} />
                   <p className="text-xs font-black text-white mb-1 italic">PLANO GOLD</p>
-                  <p className="text-[10px] font-medium text-emerald-100/60 leading-relaxed mb-4">Seu limite é de até 10 instrutores ativos.</p>
+                  <p className="text-[10px] font-medium text-emerald-100/60 leading-relaxed mb-4">Até 10 instrutores ativos.</p>
                   <button className="text-[10px] font-black text-emerald-400 uppercase tracking-widest hover:text-white transition-colors">Falar com Gerente</button>
                </div>
                <div className="absolute bottom-0 right-0 w-24 h-24 bg-emerald-500/10 blur-2xl rounded-full -mb-10 -mr-10 group-hover:bg-emerald-500/20 transition-all" />
