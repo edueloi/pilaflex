@@ -1,0 +1,7 @@
+{
+  "name": "PilaFlex - Gestão de Pilates",
+  "description": "Uma plataforma completa para clínicas de pilates, incluindo gestão de alunos, cursos estilo Udemy, financeiro, agendas e inteligência artificial para treinos.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
