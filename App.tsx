@@ -20,6 +20,7 @@ import TrainingCenter from './pages/TrainingCenter';
 import Profile from './pages/Profile';
 import Subscription from './pages/Subscription';
 import Manual from './pages/Manual';
+import VisualEvolution from './pages/VisualEvolution';
 import { 
   Bell, 
   User as UserIcon, 
@@ -140,6 +141,7 @@ const App: React.FC = () => {
       case 'training-center': return <TrainingCenter />;
       case 'student-dashboard': return <StudentDashboard />;
       case 'my-training': return <MyTraining />;
+      case 'visual-evolution': return <VisualEvolution />;
       case 'courses': return <Courses onViewingCourse={setHideLayout} />;
       case 'profile': return <Profile role={userRole} />;
       case 'subscription': return <Subscription />;
