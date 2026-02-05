@@ -1,25 +1,19 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-export class PilatesAIService {
-  private ai: GoogleGenAI;
-
-  constructor() {
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-  }
-
-  async generateRoutine(goal: string, level: string) {
+export const pilatesAI = {
+  generateRoutine: async (goal: string, level: string) => {
     try {
-      const response = await this.ai.models.generateContent({
+      // Instanciação dentro do método para garantir que process.env.API_KEY esteja disponível
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `Crie uma rotina de pilates para um aluno com o objetivo: ${goal}. Nível: ${level}. Retorne em formato Markdown estruturado com exercícios, repetições e dicas de respiração.`,
+        contents: `Você é um instrutor master de Pilates. Crie uma rotina de treinamento personalizada para um aluno com o objetivo: ${goal}. Nível de experiência: ${level}. Retorne em formato Markdown estruturado com: Nome do Exercício, Repetições/Tempo, Foco Muscular e Dica de Respiração.`,
       });
       return response.text;
     } catch (error) {
-      console.error("Erro ao gerar rotina:", error);
-      return "Desculpe, não consegui gerar a rotina no momento.";
+      console.error("Erro ao gerar rotina via Gemini:", error);
+      return "Desculpe, o instrutor virtual está em intervalo. Tente novamente em alguns segundos.";
     }
   }
-}
-
-export const pilatesAI = new PilatesAIService();
+};
