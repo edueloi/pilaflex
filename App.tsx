@@ -334,14 +334,6 @@ const App: React.FC = () => {
         {/* Scroll interno da área de conteúdo */}
         <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 pb-10">
           {renderContent()}
-          
-          {!hideLayout && (
-            <footer className="p-8 text-center bg-white border-t border-slate-100 mt-10">
-              <p className="text-slate-300 text-[10px] font-black uppercase tracking-[0.4em] italic">
-                PilaFlex Global Standards &bull; Cloud Optimized &bull; 2024
-              </p>
-            </footer>
-          )}
         </div>
       </main>
     </div>

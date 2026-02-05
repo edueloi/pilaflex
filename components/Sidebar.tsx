@@ -6,7 +6,6 @@ import {
   Calendar, 
   Users, 
   DollarSign, 
-  Settings, 
   LogOut,
   CheckSquare,
   Award,
@@ -16,9 +15,7 @@ import {
   Dumbbell,
   GraduationCap,
   ChevronRight,
-  ShieldCheck,
-  Target,
-  Zap
+  Target
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -151,24 +148,6 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
               </div>
             );
           })}
-
-          {/* Upgrade Card (Pro context) */}
-          {role !== UserRole.STUDENT && (
-            <div className="mx-2 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl mt-10 relative overflow-hidden group shrink-0">
-               <div className="relative z-10">
-                  <ShieldCheck className="text-emerald-500 mb-3" size={24} />
-                  <p className="text-xs font-black text-white mb-1 italic">PLANO GOLD</p>
-                  <p className="text-[10px] font-medium text-emerald-100/60 leading-relaxed mb-4">Até 10 instrutores ativos.</p>
-                  <button 
-                    onClick={() => handleNavClick('subscription')}
-                    className="text-[10px] font-black text-emerald-400 uppercase tracking-widest hover:text-white transition-colors"
-                  >
-                    Gerenciar Assinatura
-                  </button>
-               </div>
-               <div className="absolute bottom-0 right-0 w-24 h-24 bg-emerald-500/10 blur-2xl rounded-full -mb-10 -mr-10 group-hover:bg-emerald-500/20 transition-all" />
-            </div>
-          )}
         </nav>
 
         {/* User Profile Area - Sticky Bottom */}

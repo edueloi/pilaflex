@@ -14,20 +14,32 @@
         :root { --emerald-500: #10b981; }
         * { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
         
-        /* Custom Scrollbar Premium */
+        /* Custom Scrollbar Premium - VISIBILIDADE MÁXIMA */
         .custom-scrollbar::-webkit-scrollbar {
-          width: 5px;
-          height: 5px;
+          width: 10px; /* Mais larga para ser vista */
+          height: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 20px;
+          margin: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(16, 185, 129, 0.1);
-          border-radius: 10px;
+          background: #10b981; /* Esmeralda sólido */
+          border-radius: 20px;
+          border: 3px solid transparent;
+          background-clip: content-box;
+          box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
-        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-          background: rgba(16, 185, 129, 0.3);
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #34d399; /* Mais claro no hover */
+          border: 2px solid transparent;
+          background-clip: content-box;
+        }
+
+        /* Sidebar específica para contraste total */
+        aside.custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.02);
         }
 
         body { 

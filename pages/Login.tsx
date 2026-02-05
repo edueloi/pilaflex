@@ -5,9 +5,9 @@ import {
   Lock, 
   ArrowRight, 
   Award, 
-  ShieldCheck,
-  Zap,
-  CheckCircle2
+  ShieldCheck, 
+  Zap, 
+  CheckCircle2 
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -132,17 +132,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
           </form>
 
-          {/* Bottom Info */}
-          <div className="mt-12 lg:mt-20 pt-8 border-t border-slate-50 flex items-center justify-between">
-             <div className="flex items-center gap-3">
-                <div className="flex -space-x-2">
-                   {[1,2,3].map(i => (
-                     <img key={i} src={`https://i.pravatar.cc/100?u=${i+10}`} className="w-8 h-8 rounded-full border-2 border-white shadow-sm" alt="User" />
-                   ))}
-                </div>
-                <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">+12k Gestores Ativos</p>
-             </div>
-             <div className="flex items-center gap-2 text-emerald-500/30">
+          {/* Bottom Info - Limpo */}
+          <div className="mt-12 lg:mt-20 pt-8 border-t border-slate-50 flex items-center justify-end">
+             <div className="flex items-center gap-4 text-emerald-500/20">
                 <ShieldCheck size={20} />
                 <Zap size={20} />
              </div>
@@ -151,14 +143,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       </div>
 
       {/* LADO DIREITO: Hero Visual Premium (60%) */}
-      <div className="hidden lg:block lg:w-[60%] xl:w-[65%] h-full relative overflow-hidden bg-slate-900">
+      <div className="hidden lg:block lg:w-[60%] xl:w-[65%] h-full relative overflow-hidden bg-emerald-950">
         <img 
-          src="https://images.unsplash.com/photo-1518611012118-29a8d63a80ec?q=80&w=2070&auto=format&fit=crop" 
-          className="absolute inset-0 w-full h-full object-cover opacity-80" 
+          src="https://images.unsplash.com/photo-1544126592-807daf21565c?q=80&w=2070&auto=format&fit=crop" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" 
           alt="Modern Pilates Studio"
         />
         {/* Overlay Gradiente */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/90 via-slate-900/40 to-transparent flex flex-col justify-end p-20">
+        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/95 via-slate-900/40 to-transparent flex flex-col justify-end p-20">
            <div className="max-w-xl space-y-6 animate-in slide-in-from-right duration-1000">
               <div className="flex items-center gap-3">
                  <div className="h-[2px] w-12 bg-emerald-500" />
@@ -169,8 +161,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 MENTE <br />
                 <span className="text-emerald-500">NEGÓCIO.</span>
               </h2>
-              <p className="text-white/40 text-lg font-medium leading-relaxed max-w-sm">
-                Transforme a gestão da sua clínica em uma experiência fluida e totalmente automatizada.
+              <p className="text-white/50 text-lg font-medium leading-relaxed max-w-sm">
+                Transforme a gestão da sua clínica em uma experiência fluida, visual e totalmente automatizada.
               </p>
               
               <div className="flex gap-12 pt-10">
