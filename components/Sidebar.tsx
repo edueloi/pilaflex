@@ -15,7 +15,9 @@ import {
   Dumbbell,
   GraduationCap,
   ChevronRight,
-  Target
+  Target,
+  ShieldCheck,
+  Settings
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -47,6 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
         { id: 'students', label: 'Alunos', icon: Users },
         { id: 'finance', label: 'Financeiro', icon: DollarSign },
         { id: 'staff', label: 'Equipe', icon: Briefcase },
+        { id: 'permissions', label: 'Permissões', icon: ShieldCheck },
       ]
     },
     {
@@ -106,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
           </button>
         </div>
 
-        {/* Navigation Content - Improved Scroll and safe areas */}
+        {/* Navigation Content */}
         <nav className="flex-1 px-4 space-y-8 overflow-y-auto custom-scrollbar pb-10">
           {sections.map((section, idx) => {
             if (!section.roles.includes(role)) return null;
@@ -150,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
           })}
         </nav>
 
-        {/* User Profile Area - Sticky Bottom with safe spacing */}
+        {/* User Profile Area */}
         <div className="p-6 border-t border-white/5 bg-slate-900/30 shrink-0">
           <div 
             className="flex items-center gap-4 mb-6 px-2 cursor-pointer group"

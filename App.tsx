@@ -10,6 +10,7 @@ import Finance from './pages/Finance';
 import StudentsManagement from './pages/StudentsManagement';
 import ManageCourses from './pages/ManageCourses';
 import StaffManagement from './pages/StaffManagement';
+import PermissionsManagement from './pages/PermissionsManagement';
 import Agenda from './pages/Agenda';
 import TasksKanban from './pages/TasksKanban';
 import MyTraining from './pages/MyTraining';
@@ -128,6 +129,7 @@ const App: React.FC = () => {
       case 'agenda': return <Agenda />;
       case 'manage-courses': return <ManageCourses />;
       case 'staff': return <StaffManagement />;
+      case 'permissions': return <PermissionsManagement />;
       case 'tasks': return <TasksKanban />;
       case 'training-center': return <TrainingCenter />;
       case 'student-dashboard': return <StudentDashboard />;
