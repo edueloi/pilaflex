@@ -14,11 +14,16 @@ import {
   Zap,
   CheckCircle2,
   Info,
-  Maximize
+  Maximize,
+  X,
+  Upload,
+  Plus,
+  Trash2,
+  ChevronDown,
+  // Fix: Added missing 'Save' icon import
+  Save
 } from 'lucide-react';
 import { 
-  LineChart, 
-  Line, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -29,14 +34,39 @@ import {
 } from 'recharts';
 
 const biometricData = [
-  { date: 'Out', imc: 24.5, flex: 60, core: 50 },
-  { date: 'Nov', imc: 23.8, flex: 75, core: 65 },
-  { date: 'Dez', imc: 23.1, flex: 82, core: 80 },
+  { date: '10/Out', imc: 24.5, flex: 60, core: 50 },
+  { date: '15/Nov', imc: 23.8, flex: 75, core: 65 },
+  { date: '15/Dez', imc: 23.1, flex: 82, core: 80 },
 ];
 
 const VisualEvolution: React.FC = () => {
-  const [compareMode, setCompareMode] = useState(true);
+  const [showGrid, setShowGrid] = useState(false);
   const [selectedAngle, setSelectedAngle] = useState('Anterior');
+  const [isAddingRecord, setIsAddingRecord] = useState(false);
+  
+  // State para o novo registro
+  const [newRecord, setNewRecord] = useState({
+    weight: '',
+    height: '',
+    fat: '',
+    notes: ''
+  });
+
+  const [previews, setPreviews] = useState({
+    anterior: null as string | null,
+    perfil: null as string | null,
+    posterior: null as string | null
+  });
+
+  const handleFileChange = (side: 'anterior' | 'perfil' | 'posterior', file: File | null) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviews(prev => ({ ...prev, [side]: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="p-4 md:p-8 lg:p-10 space-y-10 animate-in fade-in duration-700 max-w-[1500px] mx-auto pb-40">
@@ -58,15 +88,18 @@ const VisualEvolution: React.FC = () => {
            <button className="flex items-center gap-3 bg-white border border-slate-200 text-slate-900 px-8 py-4 rounded-2xl hover:border-emerald-500 transition-all font-black text-[10px] uppercase tracking-widest shadow-sm">
              <Grid3X3 size={18} /> Ver Galeria
            </button>
-           <button className="flex items-center gap-3 bg-slate-950 text-white px-10 py-4 rounded-2xl hover:bg-emerald-600 shadow-xl transition-all font-black text-[10px] uppercase tracking-widest active:scale-95">
-             <Camera size={18} /> Novo Registro
+           <button 
+            onClick={() => setIsAddingRecord(true)}
+            className="flex items-center gap-3 bg-slate-950 text-white px-10 py-4 rounded-2xl hover:bg-emerald-600 shadow-xl transition-all font-black text-[10px] uppercase tracking-widest active:scale-95"
+           >
+             <Plus size={18} /> Novo Registro
            </button>
         </div>
       </header>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         
-        {/* LADO ESQUERDO: COMPARADOR DE FOTOS (O SHOWCASE) */}
+        {/* LADO ESQUERDO: COMPARADOR DE FOTOS */}
         <div className="xl:col-span-8 space-y-8">
            <div className="bg-white p-2 rounded-[56px] border border-slate-100 shadow-2xl relative overflow-hidden group">
               <div className="p-8 border-b border-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -97,6 +130,16 @@ const VisualEvolution: React.FC = () => {
                       className="w-full h-full object-cover opacity-80" 
                       alt="Antes"
                     />
+                    
+                    {/* GRELHA SOBREPOSTA */}
+                    {showGrid && (
+                      <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 pointer-events-none opacity-30">
+                        {Array.from({ length: 144 }).map((_, i) => (
+                          <div key={i} className="border-[0.5px] border-emerald-400/50" />
+                        ))}
+                      </div>
+                    )}
+
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                     <div className="absolute top-6 left-6 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20">
                        <p className="text-[10px] font-black text-white uppercase tracking-widest">INÍCIO: 12 OUT</p>
@@ -113,6 +156,16 @@ const VisualEvolution: React.FC = () => {
                       className="w-full h-full object-cover" 
                       alt="Depois"
                     />
+
+                    {/* GRELHA SOBREPOSTA */}
+                    {showGrid && (
+                      <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 pointer-events-none opacity-50">
+                        {Array.from({ length: 144 }).map((_, i) => (
+                          <div key={i} className="border-[0.5px] border-emerald-400/50" />
+                        ))}
+                      </div>
+                    )}
+
                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 via-transparent to-transparent" />
                     <div className="absolute top-6 left-6 bg-emerald-500 px-4 py-2 rounded-xl shadow-lg">
                        <p className="text-[10px] font-black text-white uppercase tracking-widest">HOJE: 15 DEZ</p>
@@ -128,13 +181,18 @@ const VisualEvolution: React.FC = () => {
 
               {/* Grelha de Postura Digital Toggle */}
               <div className="absolute inset-x-10 bottom-12 flex justify-center pointer-events-none">
-                 <div className="bg-slate-950/80 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 pointer-events-auto flex items-center gap-4">
+                 <div className="bg-slate-950/80 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 pointer-events-auto flex items-center gap-4 shadow-2xl">
                     <div className="flex items-center gap-2">
-                       <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                       <span className="text-[9px] font-black text-white uppercase tracking-[0.2em]">Grelha Milimetrada Digital</span>
+                       <div className={`w-2 h-2 rounded-full ${showGrid ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} />
+                       <span className="text-[9px] font-black text-white uppercase tracking-[0.2em]">Grelha Postural Digital</span>
                     </div>
                     <div className="w-px h-4 bg-white/10" />
-                    <button className="text-[9px] font-black text-emerald-400 uppercase tracking-widest hover:text-white transition-colors">Ativar</button>
+                    <button 
+                      onClick={() => setShowGrid(!showGrid)}
+                      className={`text-[9px] font-black uppercase tracking-widest transition-colors ${showGrid ? 'text-emerald-400 hover:text-white' : 'text-slate-400 hover:text-emerald-400'}`}
+                    >
+                      {showGrid ? 'Desativar' : 'Ativar'}
+                    </button>
                  </div>
               </div>
            </div>
@@ -142,7 +200,10 @@ const VisualEvolution: React.FC = () => {
            {/* TIMELINE DE EVOLUÇÃO BIOMÉTRICA */}
            <div className="bg-white p-10 rounded-[56px] border border-slate-100 shadow-sm">
               <div className="flex justify-between items-center mb-10">
-                 <h3 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">Bio-Data <span className="text-emerald-500">Timeline</span></h3>
+                 <div>
+                    <h3 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">Bio-Data <span className="text-emerald-500">Timeline</span></h3>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-2">Histórico de Performance Física</p>
+                 </div>
                  <div className="flex gap-2">
                     <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 rounded-lg">
                        <div className="w-2 h-2 bg-emerald-500 rounded-full" />
@@ -159,20 +220,23 @@ const VisualEvolution: React.FC = () => {
                     <AreaChart data={biometricData}>
                        <defs>
                           <linearGradient id="colorFlex" x1="0" y1="0" x2="0" y2="1">
-                             <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
+                             <stop offset="5%" stopColor="#10b981" stopOpacity={0.15}/>
                              <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                           </linearGradient>
                           <linearGradient id="colorCore" x1="0" y1="0" x2="0" y2="1">
-                             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                           </linearGradient>
                        </defs>
                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                        <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10, fontWeight: 800}} />
                        <YAxis hide />
-                       <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'}} />
-                       <Area type="monotone" dataKey="flex" stroke="#10b981" strokeWidth={4} fill="url(#colorFlex)" />
-                       <Area type="monotone" dataKey="core" stroke="#3b82f6" strokeWidth={4} fill="url(#colorCore)" />
+                       <Tooltip 
+                        contentStyle={{borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '16px'}}
+                        itemStyle={{fontFamily: 'Outfit', fontWeight: 800, textTransform: 'uppercase', fontSize: '9px'}}
+                       />
+                       <Area type="monotone" dataKey="flex" stroke="#10b981" strokeWidth={4} fill="url(#colorFlex)" dot={{r: 4, fill: '#10b981'}} activeDot={{r: 8}} />
+                       <Area type="monotone" dataKey="core" stroke="#3b82f6" strokeWidth={4} fill="url(#colorCore)" dot={{r: 4, fill: '#3b82f6'}} activeDot={{r: 8}} />
                     </AreaChart>
                  </ResponsiveContainer>
               </div>
@@ -191,9 +255,9 @@ const VisualEvolution: React.FC = () => {
                    { label: 'Gordura Corporal', value: '18.2%', trend: '-1.5%', icon: Activity, color: 'emerald' },
                    { label: 'Força Escapular', value: 'Nível 4', trend: '+1', icon: Zap, color: 'amber' },
                  ].map((stat, i) => (
-                   <div key={i} className="flex items-center justify-between p-5 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all">
+                   <div key={i} className="flex items-center justify-between p-5 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all group">
                       <div className="flex items-center gap-4">
-                         <div className={`p-3 bg-${stat.color}-500/20 text-${stat.color}-400 rounded-2xl`}>
+                         <div className={`p-3 bg-${stat.color}-500/20 text-${stat.color}-400 rounded-2xl group-hover:rotate-6 transition-transform`}>
                             <stat.icon size={20} />
                          </div>
                          <div>
@@ -218,7 +282,7 @@ const VisualEvolution: React.FC = () => {
                    { label: 'Postura de Elite', icon: CheckCircle2, date: 'Setembro' },
                    { label: 'Core Estabilizado', icon: Zap, date: 'Novembro' },
                  ].map((badge, i) => (
-                   <div key={i} className="p-6 bg-slate-50 rounded-[32px] border border-slate-100 flex flex-col items-center text-center group hover:bg-emerald-50 transition-all">
+                   <div key={i} className="p-6 bg-slate-50 rounded-[32px] border border-slate-100 flex flex-col items-center text-center group hover:bg-emerald-50 transition-all cursor-help">
                       <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-500 shadow-xl mb-4 group-hover:scale-110 transition-transform">
                          <badge.icon size={24} />
                       </div>
@@ -242,9 +306,158 @@ const VisualEvolution: React.FC = () => {
               </div>
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-white/10 blur-[80px] rounded-full group-hover:scale-125 transition-transform duration-1000" />
            </div>
-
         </div>
       </div>
+
+      {/* MODAL NOVO REGISTRO - DESIGN MASTER */}
+      {isAddingRecord && (
+        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-[500] flex items-center justify-center p-4">
+           <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[60px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 border border-white/20 flex flex-col">
+              
+              {/* Header Modal */}
+              <div className="p-8 md:p-10 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                 <div className="flex items-center gap-6">
+                    <div className="w-16 h-16 bg-emerald-500 text-white rounded-[24px] flex items-center justify-center shadow-lg transform -rotate-3">
+                       <Camera size={32} />
+                    </div>
+                    <div>
+                       <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Novo <span className="text-emerald-500">Check-in Visual</span></h2>
+                       <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Sincronize suas fotos e biometria hoje</p>
+                    </div>
+                 </div>
+                 <button 
+                  onClick={() => setIsAddingRecord(false)}
+                  className="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all shadow-sm"
+                 >
+                   <X size={24} />
+                 </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:p-12 space-y-12">
+                 
+                 {/* ZONAS DE UPLOAD */}
+                 <div className="space-y-6">
+                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                       <Camera size={14} /> Fotos de Diagnóstico
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                       {[
+                         { side: 'anterior' as const, label: 'Vista Frontal' },
+                         { side: 'perfil' as const, label: 'Vista Lateral' },
+                         { side: 'posterior' as const, label: 'Vista Posterior' }
+                       ].map((photo) => (
+                         <div key={photo.side} className="space-y-3">
+                            <div className="relative aspect-[3/4] bg-slate-50 border-2 border-dashed border-slate-200 rounded-[32px] overflow-hidden group hover:border-emerald-400 transition-all flex items-center justify-center">
+                               {previews[photo.side] ? (
+                                 <>
+                                   <img src={previews[photo.side]!} className="w-full h-full object-cover" />
+                                   <button 
+                                    onClick={() => setPreviews(prev => ({ ...prev, [photo.side]: null }))}
+                                    className="absolute top-4 right-4 p-2 bg-rose-500 text-white rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                   >
+                                      <Trash2 size={16} />
+                                   </button>
+                                 </>
+                               ) : (
+                                 <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer p-8 text-center gap-3">
+                                    <div className="p-4 bg-white rounded-2xl shadow-sm text-slate-300 group-hover:text-emerald-500 transition-colors">
+                                       <Upload size={24} />
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 group-hover:text-emerald-600">Subir Foto</span>
+                                    <input 
+                                      type="file" 
+                                      accept="image/*" 
+                                      className="hidden" 
+                                      onChange={(e) => handleFileChange(photo.side, e.target.files?.[0] || null)} 
+                                    />
+                                 </label>
+                               )}
+                            </div>
+                            <p className="text-center text-[9px] font-black text-slate-400 uppercase tracking-widest">{photo.label}</p>
+                         </div>
+                       ))}
+                    </div>
+                 </div>
+
+                 {/* DADOS BIOMÉTRICOS */}
+                 <div className="space-y-6">
+                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                       <Scale size={14} /> Medidas do Dia
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Peso (kg)</label>
+                          <input 
+                            type="number" 
+                            placeholder="70.5" 
+                            className="w-full p-6 bg-slate-50 border border-slate-100 rounded-3xl font-black text-xl outline-none focus:bg-white focus:border-emerald-500 transition-all italic tracking-tighter" 
+                            value={newRecord.weight}
+                            onChange={e => setNewRecord({...newRecord, weight: e.target.value})}
+                          />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Altura (cm)</label>
+                          <input 
+                            type="number" 
+                            placeholder="175" 
+                            className="w-full p-6 bg-slate-50 border border-slate-100 rounded-3xl font-black text-xl outline-none focus:bg-white focus:border-emerald-500 transition-all italic tracking-tighter" 
+                            value={newRecord.height}
+                            onChange={e => setNewRecord({...newRecord, height: e.target.value})}
+                          />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">% Gordura (Opcional)</label>
+                          <input 
+                            type="number" 
+                            placeholder="15.5" 
+                            className="w-full p-6 bg-slate-50 border border-slate-100 rounded-3xl font-black text-xl outline-none focus:bg-white focus:border-emerald-500 transition-all italic tracking-tighter" 
+                            value={newRecord.fat}
+                            onChange={e => setNewRecord({...newRecord, fat: e.target.value})}
+                          />
+                       </div>
+                    </div>
+                 </div>
+
+                 {/* ANALYTICS PREVIEW NO MODAL */}
+                 {(newRecord.weight && newRecord.height) && (
+                   <div className="bg-slate-900 p-8 rounded-[40px] text-white flex flex-col md:flex-row items-center justify-between gap-8 animate-in slide-in-from-top-4 duration-500">
+                      <div className="flex items-center gap-6">
+                         <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center font-black text-2xl">
+                            <Activity size={28} />
+                         </div>
+                         <div>
+                            <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">IMC Estimado Hoje</p>
+                            <h4 className="text-4xl font-black italic tracking-tighter text-emerald-400">
+                               {(Number(newRecord.weight) / Math.pow(Number(newRecord.height)/100, 2)).toFixed(1)}
+                            </h4>
+                         </div>
+                      </div>
+                      <div className="text-right">
+                         <span className="text-[10px] font-black bg-emerald-500 text-white px-5 py-2 rounded-xl uppercase tracking-widest shadow-lg">Peso Ideal Detectado</span>
+                      </div>
+                   </div>
+                 )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-8 md:p-10 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-4 shrink-0">
+                 <button 
+                  onClick={() => setIsAddingRecord(false)}
+                  className="flex-1 py-5 bg-white border border-slate-200 text-slate-500 rounded-[28px] font-black uppercase text-xs tracking-widest hover:bg-slate-100 transition-all"
+                 >
+                   Cancelar
+                 </button>
+                 <button 
+                  onClick={() => setIsAddingRecord(false)}
+                  className="flex-[2] py-5 bg-slate-950 text-white rounded-[28px] font-black uppercase text-xs tracking-[0.2em] shadow-2xl hover:bg-emerald-600 transition-all active:scale-95 flex items-center justify-center gap-3"
+                 >
+                    <Save size={18} /> Salvar e Analisar Evolução
+                 </button>
+              </div>
+           </div>
+        </div>
+      )}
+
     </div>
   );
 };
