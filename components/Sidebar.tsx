@@ -19,7 +19,8 @@ import {
   ShieldCheck,
   Settings,
   Truck,
-  Stethoscope
+  Stethoscope,
+  Camera
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -69,6 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
       items: [
         { id: 'student-dashboard', label: 'Painel Inicial', icon: LayoutDashboard },
         { id: 'my-training', label: 'Treino de Hoje', icon: Dumbbell },
+        { id: 'visual-evolution', label: 'Evolução Visual', icon: Camera },
         { id: 'courses', label: 'Cursos & Aulas', icon: BookOpen },
         { id: 'my-certificates', label: 'Certificados', icon: GraduationCap },
       ]
@@ -116,7 +118,8 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab, onLogo
         {/* Navigation Content */}
         <nav className="flex-1 px-4 space-y-8 overflow-y-auto custom-scrollbar pb-10">
           {sections.map((section, idx) => {
-            if (!section.roles.includes(role)) return null;
+            if (!section.roles && !section.items) return null; // Safety check
+            if (section.roles && !section.roles.includes(role)) return null;
             return (
               <div key={idx} className="space-y-2">
                 <h3 className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4">
