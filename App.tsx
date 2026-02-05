@@ -13,7 +13,39 @@ import StaffManagement from './pages/StaffManagement';
 import Agenda from './pages/Agenda';
 import TasksKanban from './pages/TasksKanban';
 import MyTraining from './pages/MyTraining';
-import { Bell, User as UserIcon, Menu, Search, Award, Command } from 'lucide-react';
+import { 
+  Bell, 
+  User as UserIcon, 
+  Menu, 
+  Search, 
+  Award, 
+  Command, 
+  AlertTriangle, 
+  ArrowLeft,
+  SearchX
+} from 'lucide-react';
+
+const Page404: React.FC<{ onReset: () => void }> = ({ onReset }) => (
+  <div className="min-h-[80vh] flex flex-col items-center justify-center p-8 text-center animate-in zoom-in-95 duration-500">
+    <div className="relative mb-12">
+       <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full scale-150 animate-pulse"></div>
+       <div className="relative w-40 h-40 bg-slate-950 rounded-[40px] flex items-center justify-center shadow-2xl border border-white/10 rotate-12">
+          <SearchX size={80} className="text-emerald-500" />
+       </div>
+       <div className="absolute -top-4 -right-4 w-16 h-16 bg-rose-500 text-white rounded-full flex items-center justify-center font-black text-2xl shadow-xl">404</div>
+    </div>
+    <h1 className="text-6xl font-black text-slate-950 tracking-tighter uppercase italic leading-none mb-6">Página <span className="text-emerald-500">Perdida</span></h1>
+    <p className="text-slate-400 text-xl font-medium max-w-md mb-12">
+      O movimento que você tentou realizar não existe no repertório do PilaFlex. Vamos voltar para o equilíbrio?
+    </p>
+    <button 
+      onClick={onReset}
+      className="bg-slate-950 text-white px-12 py-5 rounded-[28px] font-black uppercase tracking-widest text-xs flex items-center gap-4 hover:bg-emerald-600 transition-all shadow-2xl active:scale-95"
+    >
+      <ArrowLeft size={18} /> Retornar ao Dashboard
+    </button>
+  </div>
+);
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -46,6 +78,10 @@ const App: React.FC = () => {
     setIsAuthenticated(false);
     setIsSidebarOpen(false);
     setHideLayout(false);
+  };
+
+  const resetToHome = () => {
+    setActiveTab(userRole === UserRole.STUDENT ? 'student-dashboard' : 'dashboard');
   };
 
   if (!isAuthenticated) {
@@ -94,7 +130,7 @@ const App: React.FC = () => {
           </div>
         </div>
       );
-      default: return userRole === UserRole.STUDENT ? <StudentDashboard /> : <Dashboard />;
+      default: return <Page404 onReset={resetToHome} />;
     }
   };
 
